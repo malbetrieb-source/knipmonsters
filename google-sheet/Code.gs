@@ -60,10 +60,10 @@ function blad_() {
 function maakOverzicht_(ss) {
   if (ss.getSheetByName('Winnaars per maand')) return;
   const o = ss.insertSheet('Winnaars per maand');
+  const sep = /^en/.test(ss.getSpreadsheetLocale()) ? ',' : ';'; // Nederlandse Sheets gebruiken ;
   o.getRange('A1').setValue('Maand (jjjj-mm):');
-  o.getRange('B1').setFormula('=TEXT(TODAY(),"yyyy-mm")');
-  o.getRange('A3').setFormula(
-    '=QUERY(Scores!A:I,"select D, E, max(F) where A starts with \'"&B1&"\' group by D, E order by D, E label max(F) \'Beste score\'",1)');
+  o.getRange('B1').setFormula('=YEAR(TODAY())&"-"&IF(MONTH(TODAY())<10' + sep + '"0"' + sep + '"")&MONTH(TODAY())');
+  o.getRange('A3').setFormula('=QUERY(Scores!A:I' + sep + '"select D, E, max(F) where A starts with \'"&B1&"\' group by D, E order by D, E label max(F) \'Beste score\'"' + sep + '1)');
   o.getRange('A1:B1').setFontWeight('bold');
   o.setColumnWidths(1, 3, 180);
 }
