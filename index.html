@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Capaldi Knipmonsters</title>
 <meta name="description" content="Knipmonsters: het kinderspel van Capaldi Kappers. Trim, knip en verzamel wilde monsters!">
+<meta name="author" content="De Robotfabriek">
 <meta name="theme-color" content="#eaf6ff">
 <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Bodoni+Moda:ital,wght@0,700;1,500&family=Rubik:wght@400;500;700&display=swap">
@@ -45,6 +46,12 @@
         <p class="steplabel">Kappersmemory</p>
         <h2 class="wtitle">Zoek de paren</h2>
         <canvas class="demo" data-demo="mem" aria-hidden="true"></canvas>
+      </div>
+
+      <div class="wstep" data-k="tank">
+        <p class="steplabel">Tondeuse-tank</p>
+        <h2 class="wtitle">Maai het haarbos plat</h2>
+        <canvas class="demo" data-demo="tank" aria-hidden="true"></canvas>
       </div>
 
       <div class="wstep" data-k="kleur">
@@ -104,6 +111,7 @@
       <div class="games">
         <button class="game" id="g-knip" type="button"><canvas aria-hidden="true"></canvas><span><b>Knipmonsters</b><small>Trim en knip wilde monsters</small></span></button>
         <button class="game" id="g-mem" type="button"><canvas aria-hidden="true"></canvas><span><b>Kappersmemory</b><small>Zoek de paren en leer de spullen van de kapper kennen</small><span class="mstars" id="g-mem-stars"></span></span></button>
+        <button class="game" id="g-tank" type="button"><canvas aria-hidden="true"></canvas><span><b>Tondeuse-tank</b><small>Rij met je tank door het haarbos en maai alles plat. Snel en stoer!</small><span class="mstars" id="g-tank-stars"></span></span></button>
         <button class="game" id="g-color" type="button"><canvas aria-hidden="true"></canvas><span><b>Kapperskleurplaat</b><small>Kleur Lokkie, de monsters en de kappers in. Rustig, zonder tijd.</small></span></button>
       </div>
         <div class="say" id="say-home"><canvas width="136" height="136" aria-hidden="true"></canvas><p class="bubble" aria-live="polite"><b></b><span></span></p></div>
@@ -132,6 +140,7 @@
             <li><b>Gouden lok?</b> Tik hem snel aan, dan vangt Lokkie hem voor 50 bonuspunten.</li>
             <li><b>Sterren verdienen</b> speelt nieuwe kappers vrij. Kies ze via "Andere kapper".</li>
             <li><b>Level 3:</b> Föhnaldo, Knip Kardashian, Professor Gelda en Wilma Wortelwax hebben elk een eigen level na het knippen.</li>
+            <li><b>Tondeuse-tank:</b> houd je vinger voor de tank en maai het haarbos plat. Ontwijk de haarlakbussen en ram de klitballen.</li>
             <li><b>Kapperskleurplaat:</b> kies een plaat en kleur hem in met de emmer of de kwast. Je kunt hem opslaan en printen.</li>
             <li><b>Kappersmemory:</b> zoek de paren en leer de spullen van de kapper kennen. Ook daar verdien je sterren.</li>
             <li>Alles netjes binnen de tijd? Dan krijg je 3 sterren!</li>
@@ -234,6 +243,20 @@
     </div>
   </section>
 
+  <section id="s-tank" hidden>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="hud">
+        <div class="who"><span id="t-lvl" class="lvl"></span><span id="t-goal" class="tgoal"></span></div>
+        <div class="stat"><small>Score</small><b id="t-score">0</b></div>
+        <div class="stat"><small>Gemaaid</small><b id="t-pct">0%</b></div>
+        <button id="t-quit" class="ghost" type="button">Stoppen</button>
+        <div class="timebar"><i id="t-time"></i></div>
+      </div>
+      <div class="stage" id="tstage"><canvas id="tcv" aria-label="Speelveld: maai het haar met de tondeuse-tank"></canvas></div>
+      <div class="say" id="say-tank"><canvas width="136" height="136" aria-hidden="true"></canvas><p class="bubble" aria-live="polite"><b></b><span></span></p></div>
+    </div>
+  </section>
+
   <div id="print-area" aria-hidden="true"></div>
 
   <div id="meet" class="meet" hidden role="dialog" aria-modal="true" aria-labelledby="meet-name">
@@ -248,7 +271,7 @@
     </div>
   </div>
 
-  <footer>Een spel van <img class="flogo" src="assets/capaldi-logo.png" alt="Capaldi Kappers"> · bij ons is de kapper een feestje</footer>
+  <footer>Een spel van <img class="flogo" src="assets/capaldi-logo.png" alt="Capaldi Kappers"> · bij ons is de kapper een feestje<br><span class="credit">Ontwikkeld door <b>De Robotfabriek</b></span></footer>
 </div>
 <script src="js/game.js"></script>
 </body>
