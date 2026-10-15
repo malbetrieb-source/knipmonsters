@@ -14,7 +14,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Capaldi Kids">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Bodoni+Moda:ital,wght@0,700;1,500&family=Rubik:wght@400;500;700&display=swap">
-<link rel="stylesheet" href="css/style.css?v=20261015185154">
+<link rel="stylesheet" href="css/style.css?v=20261015185746">
 </head>
 <body>
 <div class="orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
@@ -279,6 +279,17 @@
         <button class="ghost" id="st-clear" type="button">Top 5 leegmaken</button>
         <button class="ghost" id="st-reset" type="button">Terug naar begin</button>
         <button class="ghost" id="st-reload" type="button">Spel vernieuwen</button>
+        <button class="ghost" id="st-winbtn" type="button">Winnaars van de maand</button>
+        <button class="ghost" id="st-sheetbtn" type="button">Scores naar Google Sheet</button>
+      </div>
+      <div id="st-win" class="st-panel" hidden></div>
+      <div id="st-sheet" class="st-panel" hidden>
+        <label for="st-url">Web-app-link van de Google Sheet</label>
+        <input id="st-url" type="url" inputmode="url" autocomplete="off" placeholder="https://script.google.com/macros/s/…/exec">
+        <label for="st-tablet">Naam van deze tablet</label>
+        <input id="st-tablet" type="text" maxlength="20" autocomplete="off" placeholder="Bijv. Tablet wachthoek">
+        <button class="btn" id="st-save-url" type="button">Opslaan en testen</button>
+        <p class="note" id="st-sheet-state" style="margin:0"></p>
       </div>
       <p class="note" style="margin:0">Open dit menu door het Capaldi-logo linksboven 2 seconden ingedrukt te houden.</p>
       <button class="btn" id="st-close" type="button">Sluiten</button>
@@ -304,6 +315,6 @@
     <p class="credit">Ontwikkeld door <span class="brand"><img class="bico" src="assets/robotfabriek-robot.png" alt="" width="58" height="64"><img class="bword rf" src="assets/robotfabriek-woord.png" alt="De Robotfabriek" width="494" height="48"></span></p>
   </footer>
 </div>
-<script src="js/game.js?v=20261015185154"></script>
+<script src="js/game.js?v=20261015185746"></script>
 </body>
 </html>

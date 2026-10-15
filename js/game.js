@@ -1118,8 +1118,8 @@ const A=['Snelle','Stoere','Gouden','Wilde','Turbo','Super','Mega','Flitsende'],
 $('#dice').addEventListener('click',()=>{$('#nick').value=A[Math.floor(Math.random()*A.length)]+' '+N[Math.floor(Math.random()*N.length)];});
 $('#save').addEventListener('submit',e=>{e.preventDefault();if(!RES||RES.saved)return;
  const nick=($('#nick').value||'').replace(/\s+/g,' ').trim().slice(0,16)||'Anonieme kapper';
- const d=Date.now();DB.scores.push({nick,score:RES.score,monster:RES.monster,stars:RES.stars,d,g:GRP.id});
- DB.scores=DB.scores.sort((a,b)=>b.score-a.score).slice(0,200);persist();RES.saved=true;
+ const d=Date.now(),rec={nick,score:RES.score,monster:RES.monster,stars:RES.stars,d,g:GRP.id};DB.scores.push(rec);
+ DB.scores=DB.scores.sort((a,b)=>b.score-a.score).slice(0,500);persist();RES.saved=true;queueScore(rec);
  const top=DB.scores.filter(s=>(s.g??3)===GRP.id).slice(0,5).some(s=>s.d===d);
  $('#save').hidden=true;$('#saved').textContent=top?'Opgeslagen! Je staat in de Top 5.':'Opgeslagen! Nog even oefenen voor de Top 5.';$('#saved').hidden=false;renderBoard();});
 
@@ -1303,6 +1303,39 @@ $('#staff').addEventListener('click',e=>{if(e.target.id==='staff')$('#staff').hi
 /* offline */
 if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)){addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});}
 applySalon();
+
+/* scores bewaren: maandoverzicht en Google Sheet */
+const SCORE_URL='';
+const QKEY='capaldi-score-queue';
+const sheetUrl=()=>DB.scoreUrl||SCORE_URL;
+function qLoad(){try{return JSON.parse(localStorage.getItem(QKEY)||'[]');}catch(e){return[];}}
+function qSave(q){try{localStorage.setItem(QKEY,JSON.stringify(q.slice(-300)));}catch(e){}}
+function gameLabel(r){return r.monster==='Kappersmemory'||r.monster==='Tondeuse-tank'?r.monster:'Knipmonsters · '+r.monster;}
+function queueScore(r){const q=qLoad();q.push({id:r.d+'-'+Math.random().toString(36).slice(2,8),d:r.d,nick:r.nick,game:gameLabel(r),group:(GROUPS.find(g=>g.id===r.g)||{}).label||'',score:r.score,stars:r.stars,tablet:DB.tabletName||''});qSave(q);flushScores();}
+let flushing=false;
+async function flushScores(){const url=sheetUrl();if(!url||flushing||!navigator.onLine)return;const q=qLoad();if(!q.length)return;flushing=true;
+ const batch=q.slice(0,50);
+ try{await fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(batch)});
+  const ids=new Set(batch.map(x=>x.id));qSave(qLoad().filter(x=>!ids.has(x.id)));DB.lastSync=Date.now();persist();}
+ catch(e){}finally{flushing=false;}
+ if(qLoad().length&&qLoad().length<q.length)setTimeout(flushScores,1500);}
+addEventListener('online',flushScores);setInterval(flushScores,60000);setTimeout(flushScores,4000);
+/* winnaars van de maand */
+function monthWinners(){const now=new Date(),mk=d=>{const x=new Date(d);return x.getFullYear()+'-'+(x.getMonth()+1);},cur=mk(now),best={};
+ DB.scores.filter(s=>mk(s.d)===cur).forEach(s=>{const k=gameLabel(s).split(' · ')[0]+'|'+(s.g??3);if(!best[k]||s.score>best[k].score)best[k]=s;});
+ return Object.entries(best).sort((a,b)=>a[0].localeCompare(b[0])||0);}
+function showWinners(){const el=$('#st-win');const list=monthWinners();const mn=new Date().toLocaleDateString('nl-NL',{month:'long',year:'numeric'});
+ el.innerHTML=`<h3>Winnaars van ${mn}</h3>`+(list.length?'<table><thead><tr><th>Spel</th><th>Groep</th><th>Bijnaam</th><th>Score</th><th>Datum</th></tr></thead><tbody>'+list.map(([k,s])=>{const[gm]=k.split('|');const grp=(GROUPS.find(g=>g.id===(s.g??3))||{}).label||'';
+  return `<tr><td>${gm}</td><td>${grp}</td><td>${s.nick.replace(/[<>&]/g,'')}</td><td>${s.score}</td><td>${new Date(s.d).toLocaleDateString('nl-NL',{day:'numeric',month:'short'})}</td></tr>`;}).join('')+'</tbody></table>':'<p>Deze maand zijn er op deze tablet nog geen scores opgeslagen.</p>');
+ el.hidden=false;}
+$('#st-winbtn').addEventListener('click',()=>{const el=$('#st-win');if(!el.hidden){el.hidden=true;return;}showWinners();});
+function updSheetUi(){const u=sheetUrl(),q=qLoad().length;$('#st-url').value=DB.scoreUrl||'';$('#st-tablet').value=DB.tabletName||'';
+ $('#st-sheet-state').textContent=!u?'Nog niet gekoppeld.':q?`Gekoppeld · ${q} score(s) wachten op internet.`:'Gekoppeld · alles is verstuurd'+(DB.lastSync?' ('+new Date(DB.lastSync).toLocaleTimeString('nl-NL',{hour:'2-digit',minute:'2-digit'})+')':'')+'.';}
+$('#st-sheetbtn').addEventListener('click',()=>{const el=$('#st-sheet');el.hidden=!el.hidden;if(!el.hidden)updSheetUi();});
+$('#st-save-url').addEventListener('click',async()=>{const v=$('#st-url').value.trim();if(v&&!/^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(v)){$('#st-sheet-state').textContent='Dit lijkt geen goede web-app-link. Die begint met https://script.google.com/macros/s/ en eindigt op /exec.';return;}
+ DB.scoreUrl=v;DB.tabletName=$('#st-tablet').value.trim().slice(0,20);persist();
+ if(v){const q=qLoad();q.push({id:'test-'+Date.now(),d:Date.now(),nick:'TEST',game:'Koppeling getest',group:'',score:0,stars:0,tablet:DB.tabletName||''});qSave(q);await flushScores();}
+ updSheetUi();if(v)$('#st-sheet-state').textContent+=' Er staat een TEST-regel in je spreadsheet als het werkt.';});
 
 if(/[?&]test\b/.test(location.search))window.__KM={setIdle:n=>{idleT=n;},TK,startTank,tLevelDone,S,MS,M,CK,PLATES,openPlate,startColor,fillAt,start,begin3,frame3,finish,startMem,openMeet,setAge,toStart,get GRP(){return GRP;}};
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{renderDex();renderCrew();renderGames();});

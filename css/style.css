@@ -376,3 +376,14 @@ body.salon input{-webkit-user-select:text;user-select:text}
 @media (prefers-reduced-motion:reduce){.ages .age-pro::after{animation:none}}
 body.promode .agebar{background:linear-gradient(90deg,#fff,#fff2c2)}
 @media (min-width:700px){.ages{grid-template-columns:repeat(11,minmax(0,1fr));gap:8px}.age{font-size:22px}.ages .age-pro{font-size:10px;letter-spacing:0}}
+
+.st-panel{width:100%;display:flex;flex-direction:column;gap:8px;padding:12px;border-radius:16px;background:var(--soft);text-align:left;max-height:46vh;overflow:auto}
+.st-panel h3{margin:0;font-family:var(--f-game);font-weight:400;font-size:16px}
+.st-panel table{width:100%;border-collapse:collapse;font-size:13px}
+.st-panel th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:4px 6px}
+.st-panel td{padding:6px;border-top:1px solid #dcd6f5;font-variant-numeric:tabular-nums}
+.st-panel td:nth-child(4){font-weight:700;text-align:right}
+.st-panel label{font-weight:700;font-size:13px}
+.st-panel input{font-size:14px}
+.staff-card{max-height:92vh;overflow:auto}
+.st-panel>*{flex-shrink:0}

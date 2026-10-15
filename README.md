@@ -24,6 +24,10 @@ Open één keer `…/knipmonsters/?salon` op de tablet (en zet hem op het begins
 - werkt ook offline (service worker).
 Salonmodus uitzetten kan via het personeelsmenu of met `?thuis`.
 
+## Scores bewaren
+- Personeelsmenu → **Winnaars van de maand**: hoogste score per spel en groep van deze maand op deze tablet.
+- Personeelsmenu → **Scores naar Google Sheet**: koppel alle tablets aan één spreadsheet. Uitleg en script in `google-sheet/`. Scores zonder internet worden bewaard en later verstuurd.
+
 ## Testen
 `index.html?test` zet een testhaakje (`window.__KM`) aan voor automatisch testen.
 
