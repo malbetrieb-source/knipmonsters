@@ -363,3 +363,6 @@ body.salon input{-webkit-user-select:text;user-select:text}
 @keyframes float4{0%,100%{transform:translate(0,0)}30%{transform:translate(8vw,-10vh)}60%{transform:translate(15vw,-4vh)}}
 @media (prefers-reduced-motion:reduce){.orbs i{animation:none}}
 .wrap{position:relative;z-index:1}
+
+.plate .ptag{font-size:11px;font-weight:700;color:#8a6a3a;background:#fff2c2;border-radius:999px;padding:2px 8px}
+.plate.award{border-color:#c9a063;box-shadow:0 5px 0 #c9a063}

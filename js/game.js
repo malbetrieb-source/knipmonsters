@@ -667,23 +667,29 @@ const PLATES=[
  {id:'lokkie',name:'Lokkie',draw:c=>{plateBg(c);drawCrew(c,'lokkie',300,290,150,'happy');}},
  {id:'haarriet',name:'Haarriët',draw:c=>{plateBg(c);drawCrew(c,'haarriet',300,235,105,'happy');}},
  {id:'fohnaldo',name:'Föhnaldo',draw:c=>{plateBg(c);drawCrew(c,'fohnaldo',300,265,92,'happy');}},
+ {id:'award1',name:'Award-look 1',award:true,img:'assets/kleurplaten/award-1.png'},
+ {id:'award2',name:'Award-look 2',award:true,img:'assets/kleurplaten/award-2.png'},
  {id:'spullen',name:'Kappersspullen',draw:c=>{plateBg(c);[['schaar',160,150],['fohn',440,150],['kam',160,395],['spiegel',440,395]].forEach(([id,x,y])=>{c.save();c.fillStyle='#fff';c.strokeStyle=NAVY;c.lineWidth=5;c.beginPath();c.roundRect(x-112,y-105,224,210,26);c.fill();c.stroke();c.restore();drawTool(c,id,x,y,90);});}}];
 const PAL=[['#ff5fa2','roze'],['#ff4d4d','rood'],['#ff8a3d','oranje'],['#ffc928','geel'],['#8ad94a','groen'],['#22c3c3','turquoise'],['#3fa9ff','blauw'],['#8a5cf6','paars'],['#a0673b','bruin'],['#f3cba9','huidkleur'],['#c9a063','Capaldi-goud'],['#1d2b4f','donkerblauw']];
 const CK={plate:null,tool:'fill',color:PAL[0][0],paint:null,pctx:null,line:null,mask:null,lab:null,lists:null,undo:[],dctx:null,drawing:false,last:null,dirty:false};
 const ARTKEY='capaldi-kleurplaten-v1';
 function loadArt(){try{return JSON.parse(localStorage.getItem(ARTKEY)||'[]');}catch(e){return[];}}
 function saveArt(a){try{localStorage.setItem(ARTKEY,JSON.stringify(a));return true;}catch(e){return false;}}
+const IMGS={};
+function loadImg(src){return IMGS[src]||(IMGS[src]=new Promise((ok,no)=>{const im=new Image();im.onload=()=>ok(im);im.onerror=no;im.src=src;}));}
+function drawImgPlate(c,im){c.fillStyle='#fff';c.fillRect(0,0,CP,CP);const s=Math.min(CP/im.width,CP/im.height)*.98,w=im.width*s,h=im.height*s;c.imageSmoothingQuality='high';c.drawImage(im,(CP-w)/2,(CP-h)/2,w,h);c.strokeStyle='#000';c.lineWidth=3;c.strokeRect((CP-w)/2+1,(CP-h)/2+1,w-2,h-2);}
 function buildPlate(p){
- const src=document.createElement('canvas');src.width=src.height=CP;const sc=src.getContext('2d');p.draw(sc);
+ const src=document.createElement('canvas');src.width=src.height=CP;const sc=src.getContext('2d');if(p.img)drawImgPlate(sc,p._im);else p.draw(sc);
  const d=sc.getImageData(0,0,CP,CP).data,N=CP*CP,mask=new Uint8Array(N);
  const line=document.createElement('canvas');line.width=line.height=CP;const lc=line.getContext('2d'),li=lc.createImageData(CP,CP),ld=li.data;
- const nr=29,ng=43,nb=79,vr=255-nr,vg=255-ng,vb=255-nb,vv=vr*vr+vg*vg+vb*vb;
+ const nr=29,ng=43,nb=79,vr=255-nr,vg=255-ng,vb=255-nb,vv=vr*vr+vg*vg+vb*vb,lumMode=!!p.img;
  for(let i=0;i<N;i++){const r=d[i*4],g=d[i*4+1],b=d[i*4+2];let t=((r-nr)*vr+(g-ng)*vg+(b-nb)*vb)/vv;t=Math.max(0,Math.min(1,t));
   const pr=nr+vr*t,pg=ng+vg*t,pb=nb+vb*t,dist=Math.hypot(r-pr,g-pg,b-pb);let a=0;
-  if(dist<34)a=1-t;else if(Math.hypot(r-nr,g-ng,b-nb)<60)a=1;
+  if(lumMode){const L=(r*.3+g*.59+b*.11);a=Math.max(0,Math.min(1,(215-L)/165));}else if(dist<34)a=1-t;else if(Math.hypot(r-nr,g-ng,b-nb)<60)a=1;
   if(a>.04){ld[i*4]=nr;ld[i*4+1]=ng;ld[i*4+2]=nb;ld[i*4+3]=Math.round(Math.min(1,a*1.15)*255);}
-  if(a>.5)mask[i]=1;}
+  if(a>(lumMode?.28:.5))mask[i]=1;}
  lc.putImageData(li,0,0);
+ if(lumMode){const m2=mask.slice();for(let y=1;y<CP-1;y++)for(let x=1;x<CP-1;x++){const i=y*CP+x;if(m2[i])continue;if(m2[i-1]||m2[i+1]||m2[i-CP]||m2[i+CP])mask[i]=1;}}
  // vlakken nummeren
  const lab=new Int32Array(N).fill(-1);let nl=0;const stack=new Int32Array(N);
  for(let s=0;s<N;s++){if(mask[s]||lab[s]>=0)continue;let sp=0;stack[sp++]=s;lab[s]=nl;
@@ -702,17 +708,17 @@ function buildPlate(p){
  const pos2=off.slice(),flat=new Int32Array(off[nl]+cnt[nl]);
  for(let i=0;i<N;i++){const L=lab[i]>=0?lab[i]:own[i];if(L>=0)flat[pos2[L]++]=i;}
  return{line,mask,lab,off,flat,nl};}
-function plateThumb(p,cv){const c=fitCanvas(cv,150,150);const tmp=document.createElement('canvas');tmp.width=tmp.height=CP;const tc=tmp.getContext('2d');
+async function plateThumb(p,cv){if(p.img){if(!p._im)p._im=await loadImg(p.img);const c=fitCanvas(cv,150,150),t=document.createElement('canvas');t.width=t.height=CP;drawImgPlate(t.getContext('2d'),p._im);c.drawImage(t,0,0,150,150);return;}const c=fitCanvas(cv,150,150);const tmp=document.createElement('canvas');tmp.width=tmp.height=CP;const tc=tmp.getContext('2d');
  if(!p._line){const b=buildPlate(p);p._line=b.line;}tc.fillStyle='#fff';tc.fillRect(0,0,CP,CP);tc.drawImage(p._line,0,0);c.drawImage(tmp,0,0,150,150);}
 function renderPlates(){const el=$('#c-plates');el.textContent='';
  PLATES.forEach(p=>{const b=document.createElement('button');b.type='button';b.className='plate';b.setAttribute('aria-label','Kleurplaat '+p.name);
-  const cv=document.createElement('canvas');cv.setAttribute('aria-hidden','true');b.append(cv);const s=document.createElement('span');s.textContent=p.name;b.append(s);
+  const cv=document.createElement('canvas');cv.setAttribute('aria-hidden','true');b.append(cv);const s=document.createElement('span');s.textContent=p.name;b.append(s);if(p.award){const tg=document.createElement('small');tg.className='ptag';tg.textContent='Coiffure Awards 2026';b.append(tg);b.classList.add('award');}
   b.addEventListener('click',()=>{ac();tone(784,.08,'triangle',.05);openPlate(p);});el.append(b);requestAnimationFrame(()=>plateThumb(p,cv));});
  const art=loadArt(),gw=$('#c-gal-wrap'),g=$('#c-gal');gw.hidden=!art.length;g.textContent='';
  art.slice().reverse().forEach(a=>{const im=document.createElement('img');im.src=a.img;im.alt='Jouw kleurplaat '+(PLATES.find(p=>p.id===a.plate)||{name:''}).name;g.append(im);});}
 function startColor(){S.run=false;MS.run=false;S.mode='color';$('#c-pick').hidden=false;$('#c-edit').hidden=true;$('#c-done').hidden=true;show('#s-color');renderPlates();
  say('#say-color',host(),'Kies een kleurplaat. Daarna mag je hem helemaal zelf inkleuren!','happy');}
-function openPlate(p){const b=buildPlate(p);p._line=b.line;Object.assign(CK,b,{plate:p,undo:[],dirty:false});
+async function openPlate(p){if(p.img&&!p._im){try{p._im=await loadImg(p.img);}catch(e){return;}}const b=buildPlate(p);p._line=b.line;Object.assign(CK,b,{plate:p,undo:[],dirty:false});
  const paint=document.createElement('canvas');paint.width=paint.height=CP;CK.paint=paint;CK.pctx=paint.getContext('2d',{willReadFrequently:true});CK.pctx.fillStyle='#fff';CK.pctx.fillRect(0,0,CP,CP);
  $('#c-pick').hidden=true;$('#c-edit').hidden=false;$('#c-done').hidden=true;$('#c-title').textContent=p.name;
  const cv=$('#c-cv'),sz=Math.round(cv.getBoundingClientRect().width)||500;CK.dctx=fitCanvas(cv,sz,sz);CK.sz=sz;setTool('fill');drawColor();updUndo();
