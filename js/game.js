@@ -27,7 +27,7 @@ const M=[
   target:u=>.16+.66*Math.exp(-Math.pow((u-.5)/.16,2)),
   beard:{style:'Sikje',n:13,grow:.02,time:30,target:u=>.18+.55*Math.exp(-Math.pow((u-.5)/.17,2))}},
  {id:'bliksem',no:'002',name:'Bliksemborstel',type:'Bliksem',tc:'#8a5cf6',body:'#a37dff',belly:'#e6dbff',ear:'#7a52e0',hair:['#ffe45c','#ffd23f','#fff3a8'],
-  style:'Stekeltjes',n:20,grow:.03,time:40,seed:11,sway:5,curl:1,wig:.25,zig:1,lvl:2,move:1,
+  style:'Stekelkop',n:20,grow:.03,time:40,seed:11,sway:5,curl:1,wig:.25,zig:1,lvl:2,move:1,
   target:(u,i)=>i%2?.34:.62,
   beard:{style:'Stoppelbaardje',n:15,grow:.026,time:30,target:()=>.24}},
  {id:'kraak',no:'003',name:'Kraak de Krulkraak',type:'Water',tc:'#22c3c3',body:'#3fd0c9',belly:'#cdf7f3',ear:'#22a8b8',hair:['#4fa8ff','#7fd3ff','#2f7cf0'],
@@ -162,17 +162,17 @@ function drawMonster(c,m,cx,cy,R,o){
 /* Capaldi Crew */
 const CREW={
  haarriet:{name:'Haarriët',role:'Weet alles van haar. Echt álles.',skin:'#f3cba9',hair:'#b79cff',need:0,perk:'5 seconden extra tijd',
-  pk:{time:5},lines:{i1:'Ik ben Haarriët en ik weet precies hoe het moet. Trim de baard tot een {s}. Stoppen bij de streepjes, hè!',i2:'Nu de schaar! Een {s}, daar heb ik er al duizend van geknipt.',short:['Zie je wel, te kort! Ik zei het toch?','Oeps! Kijk goed naar de streepjes.'],half:'Kijk, je luistert naar mij. Heel goed!',still:'Nu! Hij staat even stil. Snel knippen!'}},
- scharlotte:{name:'Scharlotte',role:'Knipt sneller dan je kunt kijken',skin:'#8d5a3b',hair:'#ff5fa2',need:0,perk:'Combo’s gaan dubbel zo snel',
+  pk:{time:5},lines:{i1:'Ik ben Haarriët en ik weet precies hoe het moet. Trim de baard tot een {s}. Stoppen bij de streepjes, hè!',i2:'Nu de schaar! Een {s}, daar heb ik er al duizend van geknipt.',short:['Oepsie, te kort! Volgende keer stop je bij het streepje.','Oeps! Kijk goed naar de streepjes.'],half:'Kijk, je luistert naar mij. Heel goed!',still:'Nu! Hij staat even stil. Snel knippen!'}},
+ scharlotte:{name:'Scharlotte',role:'Knipt sneller dan je kunt kijken',skin:'#8d5a3b',hair:'#ff5fa2',need:0,perk:'Snel achter elkaar knippen geeft extra punten',
   pk:{combo:.4},lines:{i1:'Zoem zoem! Trim de baard tot een {s}. Snel, maar wel netjes!',i2:'Schaar erbij! Een {s}, hup hup hup!',short:['Oeps, te snel! Stop bij het streepje.','Ho ho, rem even af!'],half:'Wauw, jij bent bijna net zo snel als ik!',still:'Nu, nu, nu! Knippen!'}},
  fohnaldo:{name:'Föhnaldo',role:'Blaast elk kapsel tot leven',skin:'#e0a878',hair:'#4a2c1a',need:2,perk:'Haar groeit langzamer',
-  pk:{grow:.8},lines:{i1:'Dames en heren... Föhnaldo! Trim die baard tot een {s}, dan föhn ik hem glanzend.',i2:'Showtime! Knip een {s} en ik blaas het tot leven.',short:['Oei! Daar kan zelfs mijn föhn niks meer aan doen.','Te kort! Het publiek schrikt ervan!'],half:'Ja! Het publiek gaat uit z’n dak!',still:'Pauze in de show! Nu knippen!'}},
+  pk:{grow:.8},lines:{i1:'Dames en heren... Föhnaldo! Trim die baard tot een {s}, dan föhn ik hem glanzend.',i2:'Showtime! Knip een {s} en ik blaas het tot leven.',short:['Oei! Daar kan zelfs mijn föhn niks meer aan doen.','Oei, te kort! Stop bij het streepje, dan klapt het publiek.'],half:'Ja! Het publiek gaat uit z’n dak!',still:'Pauze in de show! Nu knippen!'}},
  kardashian:{name:'Knip Kardashian',role:'Kent alle haartrends. Tikkeltje diva.',skin:'#e8b48e',hair:'#3a2418',need:4,perk:'Dubbele bonus bij Precies!',
-  pk:{exact:30},lines:{i1:'Hoi schat! Een {s} is hélemaal trending. Trimmen maar!',i2:'Een {s}? Zóóó dit seizoen. Knip maar!',short:['Oh nee, dat is zó vorig jaar. Niet te kort!','Schat... dat is géén trend.'],half:'Dit wordt een selfie waard!',still:'Stil voor de foto! Snel knippen!'}},
+  pk:{exact:30},lines:{i1:'Hoi schat! Een {s} is hélemaal trending. Trimmen maar!',i2:'Een {s}? Zóóó dit seizoen. Knip maar!',short:['Oh nee, dat is zó vorig jaar. Niet te kort!','Oeps, schat! Stop bij het streepje.'],half:'Dit wordt een selfie waard!',still:'Stil voor de foto! Snel knippen!'}},
  gelda:{name:'Professor Gelda',role:'Heeft voor elke coupe een formule',skin:'#6e4128',hair:'#5fe0b5',need:6,perk:'Meer ruimte bij de streepjes',
-  pk:{tol:.012},lines:{i1:'Volgens mijn formule: baard + tondeuse = {s}. Aan de slag!',i2:'Hypothese: jij knipt een perfecte {s}. Bewijs het maar!',short:['Hmm, foutje in de berekening. Te kort!','Dat klopt niet met mijn formule!'],half:'Fascinerend! Je zit al op de helft.',still:'De variabele staat stil. Nu knippen!'}},
+  pk:{tol:.012},lines:{i1:'Mijn formule: baard plus tondeuse is een {s}. Aan de slag!',i2:'Mijn voorspelling: jij knipt een perfecte {s}. Laat maar zien!',short:['Hmm, foutje in de berekening. Te kort!','Dat klopt niet met mijn formule!'],half:'Fascinerend! Je bent al op de helft.',still:'Hij staat stil, precies volgens plan! Nu knippen!'}},
  wilma:{name:'Wilma Wortelwax',role:'Uitvinder van de gekste waxkapsels',skin:'#f6d2b8',hair:'#ff7a1a',need:9,perk:'Gouden lokken komen vaker',
-  pk:{gold:true},lines:{i1:'Ik ben Wilma Wortelwax, uitvinder! Trim de baard tot een {s}, dan doe ik er wax in.',i2:'Knip een {s}, dan bouw ik er iets geks van!',short:['Te kort! Daar kan zelfs mijn superwax niks aan plakken.','Oeps! Terug naar de tekentafel.'],half:'Boing! Mijn uitvindersbrein zegt: bijna klaar!',still:'Stilstaan! Nu is je kans!'}},
+  pk:{gold:true},lines:{i1:'Ik ben Wilma Wortelwax, uitvinder! Trim de baard tot een {s}, dan doe ik er wax in.',i2:'Knip een {s}, dan bouw ik er iets geks van!',short:['Te kort! Daar kan zelfs mijn superwax niks aan plakken.','Oeps, te kort! Stop bij het streepje.'],half:'Boing! Mijn uitvindersbrein zegt: bijna klaar!',still:'Stilstaan! Nu is je kans!'}},
  petra:{name:'Petra Puntkam',role:'Duldt geen haar verkeerd',skin:'#c98f63',hair:'#2a2438',tag:'Jury'},
  lokkie:{name:'Lokkie',role:'Vangt alle losse lokken',tag:'Mascotte'}};
 const PICKABLE=['haarriet','scharlotte','fohnaldo','kardashian','gelda','wilma'];
@@ -282,7 +282,7 @@ function renderCrew(){const el=$('#crew');el.textContent='';const ts=totalStars(
   if(id==='lokkie')drawCrew(c,id,80,78,42,'happy',!open);else drawCrew(c,id,80,big?74:62,big?28:32,id==='petra'?'stern':'happy',!open);
   if(!open){c.fillStyle='#fff';c.strokeStyle=NAVY;c.lineWidth=4;c.font='46px Bungee, Impact, sans-serif';c.textAlign='center';c.textBaseline='middle';c.strokeText('?',80,64);c.fillText('?',80,64);}
   const h=document.createElement('h3');h.textContent=open?P.name:'???';d.append(h);
-  const p=document.createElement('p');p.textContent=open?P.role:`Speel ${P.need} sterren bij elkaar`;d.append(p);
+  const p=document.createElement('p');p.textContent=open?P.role:`Verdien eerst ${P.need} sterren`;d.append(p);
   if(P.tag){const t=document.createElement('span');t.className='tag';t.textContent=P.tag;d.append(t);}
   else if(open){const pk=document.createElement('p');pk.className='perk';pk.textContent='Extra: '+P.perk;d.append(pk);if(L3[id]){const l3=document.createElement('span');l3.className='tag l3tag';l3.textContent='Level 3: '+L3[id].name;d.append(l3);}
    const mb=document.createElement('button');mb.type='button';mb.className='meetbtn';mb.textContent='Stel je voor';mb.addEventListener('click',()=>{ac();openMeet(id,false);});d.append(mb);
@@ -310,7 +310,7 @@ function renderDex(){const el=$('#dex');el.textContent='';
   const h=document.createElement('h3');h.textContent=open?m.name:'???';b.append(h);
   const meta=document.createElement('div');meta.className='meta';
   meta.innerHTML=open?`<span class="chip">${m.type}</span><span class="pips" title="Moeilijkheid">${'●'.repeat(m.lvl)}${'○'.repeat(4-m.lvl)}</span><span>${moveLabel(m)}</span>`
-   :`<span>Verdien bij alle drie monsters een ster</span>`;
+   :`<span>Haal bij alle drie de monsters een ster</span>`;
   b.append(meta);
   if(open){const st=document.createElement('div');st.className='starline';st.innerHTML=[1,2,3].map(i=>`<span class="${i<=best?'on':''}">★</span>`).join('');st.setAttribute('aria-label',`${best} van 3 sterren`);b.append(st);}
   b.addEventListener('click',()=>{ac();start(m);});
@@ -521,7 +521,7 @@ let RES=null;
 function finish(){S.run=false;S.ptr.down=false;humOff();const m=S.m,[a,b,c3]=S.res;
  const score=Math.round(S.score),both=a.win&&b.win,stars=both?3:Math.round((a.stars+b.stars)/2);
  const before=PICKABLE.filter(crewOpen);DB.dex[m.id]=Math.max(DB.dex[m.id]||0,stars);persist();
- const fresh=PICKABLE.filter(id=>crewOpen(id)&&!before.includes(id));const ue=$('#e-unlock');ue.hidden=!fresh.length;if(fresh.length){ue.textContent=`Nieuw in je Crew: ${fresh.map(id=>CREW[id].name).join(' en ')}!`;tone(1318,.25,'triangle',.07,.6);meetQ=fresh.slice();setTimeout(()=>{if(!$('#s-end').hidden&&meetQ.length)openMeet(meetQ.shift(),true);},1600);}
+ const fresh=PICKABLE.filter(id=>crewOpen(id)&&!before.includes(id));const ue=$('#e-unlock');ue.hidden=!fresh.length;if(fresh.length){ue.textContent=`Nieuw in de Capaldi Crew: ${fresh.map(id=>CREW[id].name).join(' en ')}!`;tone(1318,.25,'triangle',.07,.6);meetQ=fresh.slice();setTimeout(()=>{if(!$('#s-end').hidden&&meetQ.length)openMeet(meetQ.shift(),true);},1600);}
  RES={score,stars,monster:m.name,saved:false};
  $('#e-eyebrow').textContent=`Capaldi Kappers · ${m.type} #${m.no}`;
  $('#e-title').textContent=stars===3?`${m.name} is helemaal klaar!`:stars>0?'Bijna in model!':'Wat een bos haar!';
@@ -531,7 +531,7 @@ function finish(){S.run=false;S.ptr.down=false;humOff();const m=S.m,[a,b,c3]=S.r
  $('#e-l2').textContent=`Haar (${m.style}): ${'★'.repeat(b.stars)||'–'}`;
  const e3=$('#e-l3');e3.hidden=!c3;if(c3)e3.textContent=`${L3[c3.l3].name}: ${'★'.repeat(c3.stars)||'–'}`;$('#back').textContent='Ander monster';
  $('#save').hidden=score<=0;$('#saved').hidden=true;
- say('#say-end','petra',['Hmpf. Dit noem ik geen kapsel. Nog een keer!','Mwah. Er zit een begin in. Meer oefenen!','Niet slecht... Bijna geen haar verkeerd.','Hm. Ik zie... geen enkel haar verkeerd. Knap hoor!'][stars],stars===3?'happy':'stern');
+ say('#say-end','petra',['Hmm, daar mag nog wat af. Probeer het nog een keer!','Mwah. Er zit een begin in. Nog even oefenen!','Niet slecht... Bijna geen haar verkeerd.','Hm. Ik zie... geen enkel haar verkeerd. Knap hoor!'][stars],stars===3?'happy':'stern');
  if(!c3){if(b.win)fanfare();else tone(330,.3,'triangle',.07);}
  show('#s-end');preview($('#end-cv'),m,300,280,false,false,'happy',S.beard.map(s=>s.Lf),S.hair.map(s=>s.Lf));
  renderDex();renderBoard();}
@@ -546,8 +546,8 @@ const L3={
   intro:'Level 3 bij mij! Tik op de puntjes van het haar, dan zet ik er een stoere waxpiek in.',done:'Boing! Wat een uitvinding! Prachtige pieken!'},
  kardashian:{name:'Fotomoment',banner:'Level 3 · Fotomoment',go:'FOTO!',time:30,label:'Foto’s',
   hint:'Tik als het monster precies in het fotokader staat. Drie foto’s!',
-  intro:'Level 3, schat! Tik als het monster precies in het kader staat. We maken drie foto’s!',done:'Oh my, wat een plaatjes! Helemaal trending!'},
- gelda:{name:'Gel-formule',banner:'Level 3 · Gel-formule',go:'KIJK!',time:50,label:'Rondes',
+  intro:'Level 3, schat! Tik als het monster precies in het kader staat. We maken drie foto’s!',done:'Oh wauw, wat een plaatjes! Helemaal trending!'},
+ gelda:{name:'Gelformule',banner:'Level 3 · Gelformule',go:'KIJK!',time:50,label:'Rondes',
   hint:'Kijk welke gelpotjes oplichten. Tik ze daarna in dezelfde volgorde.',
   intro:'Level 3: mijn formule! Kijk welke potjes oplichten en tik ze daarna in dezelfde volgorde.',done:'Eureka! Jouw formule klopt helemaal!'}};
 const GELC=['#ff5fa2','#22c3c3','#ffc928','#8a5cf6'],GELF=[523,659,784,988];
@@ -599,12 +599,12 @@ function tap3(p,drag){const k=S.k3;if(!S.run||S.cd>0)return;
  if(k==='kardashian'&&!drag){if(S.freeze>0||S.cool>0)return;const d=Math.hypot(S.ox,S.oy)/(R*.5);
   if(d<.4){const pts=Math.round(60+100*(1-d/.4));S.score+=pts;S.photos++;S.flash=1;S.freeze=1.1;S.snaps.push(1);snapSound();
    S.floats.push({x:BX,y:BY-R*1.6,txt:(d<.15?'Perfect! ':'Klik! ')+'+'+pts,col:'#ff5fa2',life:1.1});
-   say('#say-play','kardashian',S.photos<3?['Klik! Prachtig, schat!','Wauw, die gaat online!'][S.photos-1]:'Drie foto’s! Wat een plaatjes!','happy',true);}
+   say('#say-play','kardashian',S.photos<3?['Klik! Prachtig, schat!','Wauw, die hang ik aan de muur!'][S.photos-1]:'Drie foto’s! Wat een plaatjes!','happy',true);}
   else{S.cool=.7;S.shock=.4;S.score=Math.max(0,S.score-10);oops();S.floats.push({x:BX,y:BY-R*1.6,txt:'Wazig!',col:'#ff4d6d',life:.9});say('#say-play','kardashian','Wazig, schat! Wacht tot hij in het kader staat.','happy');}}
  if(k==='gelda'&&!drag){const g=S.gel;if(g.phase!=='input')return;let hit=-1;for(let j=0;j<4;j++){const q=potPos(j);if(Math.hypot(q.x-p.x,q.y-p.y)<q.r*1.35)hit=j;}if(hit<0)return;
   g.tap=hit;g.tapT=.3;tone(GELF[hit],.25,'triangle',.07);
   if(hit===g.seq[g.inp]){g.inp++;if(g.inp===g.seq.length){g.round++;S.score+=40*g.seq.length;const q=potPos(hit);S.floats.push({x:BX,y:BY-R*1.6,txt:'Formule klopt! +'+40*g.seq.length,col:'#2fb36b',life:1.2});
-    if(g.round<g.rounds.length){say('#say-play','gelda','Correct! De volgende formule is een beetje langer.','happy',true);newSeq();g.pt=-1.4;}else S.p3=1;}}
+    if(g.round<g.rounds.length){say('#say-play','gelda','Goed zo! De volgende formule is een beetje langer.','happy',true);newSeq();g.pt=-1.4;}else S.p3=1;}}
   else{S.shock=.5;S.shake=.2;oops();S.score=Math.max(0,S.score-15);say('#say-play','gelda','Foutje in de formule! Kijk nog een keer goed.','happy',true);g.phase='show';g.pt=-1.2;g.inp=0;g.lit=-1;}}}
 function snapSound(){const a=ac();if(!a||muted)return;const len=.08,buf=a.createBuffer(1,Math.floor(a.sampleRate*len),a.sampleRate),d=buf.getChannelData(0);
  for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,2);const s=a.createBufferSource();s.buffer=buf;const g=a.createGain();g.gain.value=.5;s.connect(g).connect(a.destination);s.start();tone(1568,.2,'triangle',.05,.06);}
@@ -674,10 +674,10 @@ function countdown(c,go,sub){const el=3-S.cd,lbl=el<.75?'3':el<1.5?'2':el<2.25?'
 /* kennismaken met een kapper */
 const MEET={
  haarriet:['Hoi! Ik ben Haarriët, kapster bij Capaldi.','Ik weet álles van haar. Echt álles!','Bij mij krijg je 5 seconden extra tijd.'],
- scharlotte:['Hoi! Ik ben Scharlotte.','Ik knip sneller dan je kunt kijken!','Bij mij gaan je combo’s dubbel zo snel.'],
+ scharlotte:['Hoi! Ik ben Scharlotte.','Ik knip sneller dan je kunt kijken!','Knip snel achter elkaar, dan krijg je bij mij nog meer punten!'],
  fohnaldo:['Dames en heren... ik ben Föhnaldo!','Met mijn föhn blaas ik elk kapsel tot leven.','Kies mij, dan mag je na het knippen föhnen in level 3!'],
  kardashian:['Hoi schat! Ik ben Knip Kardashian.','Ik ken alle nieuwste haartrends.','Kies mij, dan maken we na het knippen de mooiste foto’s in level 3!'],
- gelda:['Goedendag! Ik ben Professor Gelda.','Voor elk kapsel heb ik een formule.','Kies mij, dan los je na het knippen mijn gel-puzzel op in level 3!'],
+ gelda:['Goedendag! Ik ben Professor Gelda.','Voor elk kapsel heb ik een formule.','Kies mij, dan los je na het knippen mijn gelpuzzel op in level 3!'],
  wilma:['Boing! Ik ben Wilma Wortelwax, uitvinder!','Met mijn wax maak ik de gekste pieken.','Kies mij, dan zet je na het knippen alles in de wax in level 3!']};
 let meetQ=[],meetRaf=0,meetTimer=0,meetId=null;
 function openMeet(id,fresh){meetId=id;const P=CREW[id];
@@ -854,7 +854,7 @@ function startTank(){if(!GRP)return;S.run=false;MS.run=false;S.mode='tank';Objec
  tLayout();tBegin();TK.last=performance.now();requestAnimationFrame(tFrame);}
 function tBegin(){const L=TLV[TK.lv];tBuild();TK.lim=Math.round(L.time*GRP.time);if(GRP.id===5)TK.lim=Math.round(L.time*.8);TK.left=TK.lim;TK.cd=3;TK.t=0;TK.said={};
  $('#t-lvl').textContent=`Level ${TK.lv+1} · ${L.name}`;tHud();
- say('#say-tank',host(),[`Rij met je tondeuse-tank over het haar. Maai ${Math.round(tGoal()*100)} procent voordat de tijd op is!`,'Pas op voor de haarlakbussen! Botsen laat je tank tollen.','De klitballen laten het haar weer groeien. Ram ze kapot!'][TK.lv],'happy',true);
+ say('#say-tank',host(),[`Rij met je tondeuse-tank over het haar. Maai ${Math.round(tGoal()*100)} procent voordat de tijd op is!`,'Pas op voor de haarlakbussen! Als je ertegenaan botst, gaat je tank tollen.','De klitballen laten het haar weer groeien. Rij ze kapot!'][TK.lv],'happy',true);
  [0,.75,1.5].forEach(w=>tone(660,.12,'square',.05,w));tone(990,.3,'square',.06,2.25);}
 function tGoal(){return Math.min(.95,TLV[TK.lv].goal+(GRP&&GRP.id===4?.05:GRP&&GRP.id===5?.1:0));}
 function tHud(){$('#t-score').textContent=Math.round(TK.score);$('#t-pct').textContent=Math.floor(TK.mowed/TK.total*100)+'%';
@@ -892,7 +892,7 @@ function tTick(dt){const cs=TK.cs;TK.left-=dt;
   for(const r of TK.kams){if(b.x>r.x-b.r&&b.x<r.x+r.w+b.r&&b.y>r.y-b.r&&b.y<r.y+r.h+b.r){const ox=Math.min(Math.abs(b.x-r.x+b.r),Math.abs(r.x+r.w+b.r-b.x)),oy=Math.min(Math.abs(b.y-r.y+b.r),Math.abs(r.y+r.h+b.r-b.y));if(ox<oy)b.vx*=-1;else b.vy*=-1;b.x+=b.vx*dt*2;b.y+=b.vy*dt*2;}}
   if(TK.stun<=0&&Math.hypot(b.x-TK.x,b.y-TK.y)<b.r+TR-4){TK.stun=.9;TK.combo=1;TK.score=Math.max(0,TK.score-20);oops();TK.floats.push({x:TK.x,y:TK.y-30,txt:'Pssst! −20',col:'#ff4d6d',life:1});
    for(let k=0;k<14;k++){const a=Math.random()*Math.PI*2;TK.parts.push({x:b.x,y:b.y,vx:Math.cos(a)*90,vy:Math.sin(a)*90,life:.6,col:'rgba(255,255,255,.9)',mist:1});}
-   b.vx=(b.x-TK.x)*3;b.vy=(b.y-TK.y)*3;if(!TK.said.bus){TK.said.bus=1;say('#say-tank',host(),'Pssst! Haarlak in je gezicht. Ontwijk die bussen!','happy',true);}}}
+   b.vx=(b.x-TK.x)*3;b.vy=(b.y-TK.y)*3;if(!TK.said.bus){TK.said.bus=1;say('#say-tank',host(),'Pssst! Een wolk haarlak. Rij om die bussen heen!','happy',true);}}}
  // klitballen
  for(const k of TK.klit){k.rot+=dt*3;if(k.away>0){k.away-=dt;if(k.away<=0){k.x=Math.random()<.5?30:TK.WW-30;k.y=30;newKlitTarget(k);}continue;}
   const dx=k.tx-k.x,dy=k.ty-k.y,d=Math.hypot(dx,dy);if(d<8)newKlitTarget(k);else{k.x+=dx/d*k.sp*dt;k.y+=dy/d*k.sp*dt;}tRegrow(k.x,k.y,k.r*.9);
@@ -990,14 +990,14 @@ function tRender(){const c=tctx;if(!c)return;c.save();c.setTransform(1,0,0,1,0,0
 function tFinish(){TK.run=false;humOff();const done=TK.res.filter(r=>r.win).length,stars=done,score=Math.round(TK.score);
  const before=PICKABLE.filter(crewOpen);DB.tank=Math.max(DB.tank||0,stars);persist();
  const fresh=PICKABLE.filter(id=>crewOpen(id)&&!before.includes(id)),ue=$('#e-unlock');ue.hidden=!fresh.length;
- if(fresh.length){ue.textContent=`Nieuw in je Crew: ${fresh.map(id=>CREW[id].name).join(' en ')}!`;meetQ=fresh.slice();setTimeout(()=>{if(!$('#s-end').hidden&&meetQ.length)openMeet(meetQ.shift(),true);},1600);}
+ if(fresh.length){ue.textContent=`Nieuw in de Capaldi Crew: ${fresh.map(id=>CREW[id].name).join(' en ')}!`;meetQ=fresh.slice();setTimeout(()=>{if(!$('#s-end').hidden&&meetQ.length)openMeet(meetQ.shift(),true);},1600);}
  RES={score,stars,monster:'Tondeuse-tank',saved:false};
  $('#e-eyebrow').textContent='Capaldi Kappers · Tondeuse-tank';
  $('#e-title').textContent=done===3?'Alle velden kaal!':done>0?`${done} ${done>1?'velden':'veld'} gemaaid!`:'Het haar won deze keer';
  const st=$('#e-stars');st.innerHTML=[1,2,3].map(i=>`<span class="${i<=stars?'on':''}">★</span>`).join('');st.setAttribute('aria-label',`${stars} van 3 sterren`);
  $('#e-score').textContent=score;const last=TK.res[TK.res.length-1];$('#e-l1').textContent=`Level ${TK.res.length} van 3`;$('#e-l2').textContent=`${Math.floor(last.pct*100)}% gemaaid`;$('#e-l3').hidden=true;$('#back').textContent='Ander spel';
  $('#save').hidden=score<=0;$('#saved').hidden=true;
- say('#say-end','petra',['Hmpf. Daar staat nog een heel bos. Nog een keer!','Mwah. Eén veld netjes, de rest is nog een jungle.','Niet slecht... Bijna overal kaal!','Hm. Geen sprietje meer te zien. Knap hoor!'][stars],stars===3?'happy':'stern');
+ say('#say-end','petra',['Hmm, daar staat nog een heel bos. Probeer het nog een keer!','Mwah. Eén veld is netjes. Nu de rest nog!','Niet slecht... Bijna overal kaal!','Hm. Geen sprietje meer te zien. Knap hoor!'][stars],stars===3?'happy':'stern');
  if(done)fanfare();else tone(330,.3,'triangle',.07);show('#s-end');
  const c=fitCanvas($('#end-cv'),300,280);c.clearRect(0,0,300,280);c.fillStyle='#ffd6ea';c.beginPath();c.roundRect(10,30,280,220,24);c.fill();
  for(let q=0;q<14;q++){const x=30+q*18,P=['#ffc928','#ff9f1c','#ff5fa2'];if(q>4&&q<10)continue;c.strokeStyle=NAVY;c.lineWidth=5;c.lineCap='round';c.beginPath();c.moveTo(x,230);c.quadraticCurveTo(x,190,x+6,170);c.stroke();c.strokeStyle=P[q%3];c.lineWidth=3;c.stroke();}
@@ -1024,8 +1024,8 @@ const TOOLS=[
  {id:'spuit',name:'Waterspuit',say:'Een waterspuit! Zo maakt de kapper je haar een beetje nat.'},
  {id:'cape',name:'Kapperscape',say:'Een kapperscape! Die houdt de haartjes van je kleren af.'},
  {id:'spiegel',name:'Spiegel',say:'Een spiegel! Daarin zie je hoe mooi je wordt.'},
- {id:'krultang',name:'Krultang',say:'Een krultang! Daarmee maak je mooie krullen.'},
- {id:'wax',name:'Wax',say:'Een potje wax! Daarmee maak je stoere pieken.'},
+ {id:'krultang',name:'Krultang',say:'Een krultang! Daarmee maakt de kapper mooie krullen.'},
+ {id:'wax',name:'Wax',say:'Een potje wax! Daarmee maakt de kapper stoere pieken.'},
  {id:'stoel',name:'Kappersstoel',say:'De kappersstoel! Die kan omhoog en omlaag, net een lift.'}];
 function drawTool(c,id,x,y,s){c.save();c.translate(x,y);c.lineJoin='round';c.lineCap='round';c.strokeStyle=NAVY;c.lineWidth=Math.max(2,s*.06);
  const lw=c.lineWidth;
@@ -1088,14 +1088,14 @@ function finishMem(){const n=MS.n,secs=(performance.now()-MS.t0)/1000;
  const score=n*100+Math.max(0,Math.round(n*2.5)-MS.moves)*30+Math.max(0,180-Math.round(secs))*2;
  const before=PICKABLE.filter(crewOpen);DB.mem=Math.max(DB.mem||0,stars);persist();
  const fresh=PICKABLE.filter(id=>crewOpen(id)&&!before.includes(id)),ue=$('#e-unlock');ue.hidden=!fresh.length;
- if(fresh.length){ue.textContent=`Nieuw in je Crew: ${fresh.map(id=>CREW[id].name).join(' en ')}!`;meetQ=fresh.slice();setTimeout(()=>{if(!$('#s-end').hidden&&meetQ.length)openMeet(meetQ.shift(),true);},1600);}
+ if(fresh.length){ue.textContent=`Nieuw in de Capaldi Crew: ${fresh.map(id=>CREW[id].name).join(' en ')}!`;meetQ=fresh.slice();setTimeout(()=>{if(!$('#s-end').hidden&&meetQ.length)openMeet(meetQ.shift(),true);},1600);}
  RES={score,stars,monster:'Kappersmemory',saved:false};
  $('#e-eyebrow').textContent='Capaldi Kappers · Kappersmemory';
- $('#e-title').textContent=stars===3?'Echte memory-meester!':'Alle paren gevonden!';
+ $('#e-title').textContent=stars===3?'Echte memorymeester!':'Alle paren gevonden!';
  const st=$('#e-stars');st.innerHTML=[1,2,3].map(i=>`<span class="${i<=stars?'on':''}">★</span>`).join('');st.setAttribute('aria-label',`${stars} van 3 sterren`);
  $('#e-score').textContent=score;$('#e-l1').textContent=`${n} paren`;$('#e-l2').textContent=`${MS.moves} beurten`;$('#e-l3').hidden=true;$('#back').textContent='Ander spel';
  $('#save').hidden=false;$('#saved').hidden=true;
- say('#say-end','petra',['','Mwah. Veel beurten nodig, hè? Nog een keer!','Niet slecht... Je kent de spullen van de kapper al aardig.','Hm. Ik zie... een echte kapper in de dop!'][stars],stars===3?'happy':'stern');
+ say('#say-end','petra',['','Mwah. Dat waren veel beurten. Volgende keer gaat het vast sneller!','Niet slecht... Je kent de spullen van de kapper al aardig.','Hm. Ik zie... een echte kapper in de dop!'][stars],stars===3?'happy':'stern');
  fanfare();show('#s-end');
  const c=fitCanvas($('#end-cv'),300,280);c.clearRect(0,0,300,280);const ids=MS.cards.slice(0,4).map(x=>x.t.id);
  ids.forEach((id,k)=>{const x=82+(k%2)*136,y=78+Math.floor(k/2)*128;c.save();c.translate(x,y);c.rotate((k%2?1:-1)*.08);c.fillStyle='#fff';c.strokeStyle=NAVY;c.lineWidth=3;c.beginPath();c.roundRect(-56,-60,112,120,14);c.fill();c.stroke();c.restore();drawTool(c,id,x,y,40);});
@@ -1117,7 +1117,7 @@ function renderGames(){const a=fitCanvas($('#g-knip canvas'),160,110);a.clearRec
 const A=['Snelle','Stoere','Gouden','Wilde','Turbo','Super','Mega','Flitsende'],N=['Schaar','Kam','Föhn','Knipper','Krul','Stekel','Kuif','Tondeuse'];
 $('#dice').addEventListener('click',()=>{$('#nick').value=A[Math.floor(Math.random()*A.length)]+' '+N[Math.floor(Math.random()*N.length)];});
 $('#save').addEventListener('submit',e=>{e.preventDefault();if(!RES||RES.saved)return;
- const nick=($('#nick').value||'').replace(/\s+/g,' ').trim().slice(0,16)||'Anonieme Kapper';
+ const nick=($('#nick').value||'').replace(/\s+/g,' ').trim().slice(0,16)||'Anonieme kapper';
  const d=Date.now();DB.scores.push({nick,score:RES.score,monster:RES.monster,stars:RES.stars,d,g:GRP.id});
  DB.scores=DB.scores.sort((a,b)=>b.score-a.score).slice(0,200);persist();RES.saved=true;
  const top=DB.scores.filter(s=>(s.g??3)===GRP.id).slice(0,5).some(s=>s.d===d);
@@ -1139,12 +1139,12 @@ const GEN=[
 const KNIP=[
  {k:'tondeuse',who:()=>host(),say:['Level 1: houd je vinger op de baard en schuif de tondeuse eroverheen.']},
  {k:'schaar',who:()=>host(),say:['Level 2: veeg met je vinger door het haar om te knippen.']},
- {k:'streepjes',who:'petra',say:['Ik ben Petra, de jury. Knip tot aan het streepje.','Groen is goed. Rood is te kort.']},
- {k:'groei',who:()=>host(),say:['Goed nieuws: het haar groeit steeds weer aan!','Zie je "Groeit aan!"? Knip het nog een keer bij, dan pak je weer extra punten.']},
+ {k:'streepjes',who:'petra',say:['Ik ben Petra. Ik kijk of je netjes knipt. Knip tot aan het streepje.','Groen is goed. Rood is te kort.']},
+ {k:'groei',who:()=>host(),say:['Goed nieuws: het haar groeit steeds weer aan!','Zie je "Groeit aan!"? Knip het nog een keer, dan krijg je weer extra punten.']},
  {k:'goud',who:'lokkie',say:['Ik ben Lokkie! Zie je een gouden lok? Tik er snel op voor 50 extra punten!']},
  {k:'klaar',who:()=>host(),say:['Super, je weet alles!','Kies nu wie er bij Capaldi in de stoel mag.'],next:'Naar de monsters'}];
-const MEMU=[{k:'mem',who:()=>host(),say:['Bij memory liggen alle kaartjes omgedraaid.','Tik op twee kaartjes. Zijn ze hetzelfde? Dan heb je een paar!','Bij elk paar vertel ik wat je bij de kapper met dat ding doet.'],next:'Spelen!'}];
-const TANKU=[{k:'tank',who:()=>host(),say:['Dit is je tondeuse-tank! Het hele veld zit vol wild haar.','Houd je vinger een stukje vóór de tank. Hij rijdt erheen en maait alles plat.','Maai genoeg haar voor de tijd op is. Pas op voor haarlakbussen en ram de klitballen kapot!'],next:'Starten!'}];
+const MEMU=[{k:'mem',who:()=>host(),say:['Bij memory liggen alle kaartjes omgedraaid.','Tik op twee kaartjes. Zijn ze hetzelfde? Dan heb je een paar!','Bij elk paar vertel ik wat de kapper ermee doet.'],next:'Spelen!'}];
+const TANKU=[{k:'tank',who:()=>host(),say:['Dit is je tondeuse-tank! Het hele veld zit vol wild haar.','Houd je vinger een stukje vóór de tank. Hij rijdt erheen en maait alles plat.','Maai genoeg haar voordat de tijd op is. Pas op voor haarlakbussen en rij de klitballen kapot!'],next:'Starten!'}];
 const COLU=[{k:'kleur',who:()=>host(),say:['Kies eerst een kleurplaat.','Tik op een kleur en dan op een vlak. Hup, ingekleurd!','Met de kwast kun je ook zelf tekenen. Rustig aan, er is geen tijd.'],next:'Kleuren!'}];
 let WSUB=0,STEPS=GEN,AFTER=null,AFTERSEEN=null;
 const parts=st=>{const v=typeof st.say==='function'?st.say():st.say;return Array.isArray(v)?v:[v];};
