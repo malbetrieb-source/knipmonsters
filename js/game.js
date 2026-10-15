@@ -654,7 +654,7 @@ $('#meet-pick').addEventListener('click',()=>{DB.crew=meetId;persist();tone(784,
  const pb=$('#meet-pick');pb.textContent='Dit is jouw kapper';pb.disabled=true;$('#meet-close').textContent='Verder';clearTimeout(meetTimer);say('#say-meet',meetId,'Top! Ik ben nu jouw kapper.','happy');});
 
 $('#quit').addEventListener('click',()=>{S.run=false;humOff();renderCrew();toKnip();});
-/* Kapperskleurplaat */
+/* Kleurplaat */
 const CP=600;
 function plateBg(c){c.fillStyle='#fff';c.fillRect(0,0,CP,CP);c.strokeStyle=NAVY;c.lineWidth=5;c.lineJoin='round';
  c.beginPath();c.moveTo(0,505);c.lineTo(CP,505);c.stroke();for(let x=-20;x<CP;x+=60){c.beginPath();c.moveTo(x,505);c.lineTo(x+40,CP);c.stroke();}

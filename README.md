@@ -7,7 +7,7 @@ Doel: de kapper minder spannend maken voor kinderen, en met een klassement prijz
 ## Spellen
 - **Knipmonsters** – level 1 tondeuse, level 2 schaar. Föhnaldo, Knip Kardashian, Professor Gelda en Wilma Wortelwax hebben elk een eigen level 3 (föhnen, fotomoment, gel-formule, waxen).
 - **Tondeuse-tank** – stoere actiegame: maai met een tondeuse-tank 3 haarvelden plat (kammen, haarlakbussen, klitballen, power-ups, combo's). Tot 3 sterren.
-- **Kapperskleurplaat** – 7 platen (monsters, Lokkie, Haarriët, Föhnaldo, kappersspullen) inkleuren met vullen, kwast en gum. Afgemaakte platen worden per apparaat bewaard en zijn op te slaan als PNG of te printen, met Capaldi-rand. Lege platen zijn ook te printen voor in de salon.
+- **Kleurplaat** – 7 platen (monsters, Lokkie, Haarriët, Föhnaldo, kappersspullen) inkleuren met vullen, kwast en gum. Afgemaakte platen worden per apparaat bewaard en zijn op te slaan als PNG of te printen, met Capaldi-rand. Lege platen zijn ook te printen voor in de salon.
 - **Kappersmemory** – paren zoeken met de spullen van de kapper; bij elk paar legt de kapper uit wat het is.
 
 Nieuwe kappers spelen zich vrij met sterren (max. 18: 12 uit Knipmonsters, 3 uit memory, 3 uit de tondeuse-tank) en stellen zich dan voor.
