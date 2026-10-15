@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Capaldi Knipmonsters</title>
+<meta name="description" content="Knipmonsters: het kinderspel van Capaldi Kappers. Trim, knip en verzamel wilde monsters!">
+<meta name="theme-color" content="#eaf6ff">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Bodoni+Moda:ital,wght@0,700;1,500&family=Rubik:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="glogo" role="img" aria-label="Capaldi Kappers"><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="44" fill="#fff" stroke="#1d2b4f" stroke-width="5"/><circle cx="50" cy="50" r="33" fill="none" stroke="#d4b07a" stroke-width="3.5" stroke-dasharray="196 11" transform="rotate(95.5 50 50)"/><text x="50" y="53" text-anchor="middle" dominant-baseline="middle" font-family="'Bodoni Moda', Didot, Georgia, serif" font-weight="700" font-size="46" fill="#d4b07a">C</text></svg><span class="gl-t"><b>CAPALDI</b><small>KAPPERS</small></span></div>
+    <div class="topbtns"><button id="voicebtn" class="ghost" type="button" aria-pressed="false">Stem: aan</button><button id="devbtn" class="ghost" type="button" hidden>Scherm</button><button id="mute" class="ghost" type="button" aria-pressed="false">Geluid: aan</button></div>
+  </header>
+
+  <section id="s-intro" hidden>
+    <div class="wiz">
+      <div class="dots" id="w-dots" aria-hidden="true"></div>
+      <div class="say" id="say-start"><canvas width="136" height="136" aria-hidden="true"></canvas><p class="bubble" aria-live="polite"><b></b><span></span></p></div>
+
+      <div class="wstep" data-k="welkom">
+        <div class="hero" style="align-items:center;text-align:center">
+          <p class="eyebrow">Capaldi Kappers presenteert</p>
+          <h1><span class="row1">Knip</span><span class="rain" aria-label="monsters"><span>m</span><span>o</span><span>n</span><span>s</span><span>t</span><span>e</span><span>r</span><span>s</span></span></h1>
+        </div>
+        <canvas class="demo" data-demo="hello" aria-hidden="true"></canvas>
+      </div>
+
+      <div class="wstep" data-k="scherm">
+        <h2 class="wtitle">Waar speel je op?</h2>
+        <div class="devs">
+          <button class="dev" type="button" data-dev="phone"><span class="ico phone" aria-hidden="true"></span><b>Telefoon</b><small>Groot speelveld, je kapper praat in beeld</small></button>
+          <button class="dev" type="button" data-dev="tablet"><span class="ico tablet" aria-hidden="true"></span><b>Tablet of computer</b><small>Ook voor de tablet in de salon</small></button>
+        </div>
+      </div>
+
+      <div class="wstep" data-k="leeftijd">
+        <h2 class="wtitle">Hoe oud ben je?</h2>
+        <div id="ages" class="ages" role="group" aria-label="Kies je leeftijd"></div>
+        <p class="note" style="margin:0;text-align:center">Hoe ouder je bent, hoe beweeglijker de monsters. Je leeftijd wordt nergens bewaard.</p>
+      </div>
+
+      <div class="wstep" data-k="kapper">
+        <h2 class="wtitle">Kies je Capaldi-kapper</h2>
+        <div id="crew" class="crew"></div>
+      </div>
+
+      <div class="wstep" data-k="tondeuse">
+        <p class="steplabel">Level 1</p>
+        <h2 class="wtitle">Baard trimmen met de tondeuse</h2>
+        <canvas class="demo" data-demo="clip" aria-hidden="true"></canvas>
+      </div>
+
+      <div class="wstep" data-k="schaar">
+        <p class="steplabel">Level 2</p>
+        <h2 class="wtitle">Haar knippen met de schaar</h2>
+        <canvas class="demo" data-demo="cut" aria-hidden="true"></canvas>
+      </div>
+
+      <div class="wstep" data-k="streepjes">
+        <h2 class="wtitle">Stop bij de streepjes</h2>
+        <canvas class="demo" data-demo="lines" aria-hidden="true"></canvas>
+        <div class="legend"><span class="t">Streepje: tot hier knippen</span><span class="g">Groen: precies goed!</span><span class="r">Rood: te kort, kost punten</span></div>
+      </div>
+
+      <div class="wstep" data-k="groei">
+        <h2 class="wtitle">Het haar groeit weer aan!</h2>
+        <canvas class="demo" data-demo="grow" aria-hidden="true"></canvas>
+      </div>
+
+      <div class="wstep" data-k="goud">
+        <h2 class="wtitle">De gouden lok</h2>
+        <canvas class="demo" data-demo="gold" aria-hidden="true"></canvas>
+      </div>
+
+      <div class="wstep" data-k="klaar">
+        <h2 class="wtitle">Klaar om te knippen!</h2>
+        <div class="bigstars" aria-hidden="true"><span>★</span><span>★</span><span>★</span></div>
+      </div>
+
+      <div class="wnav">
+        <button id="w-back" class="ghost" type="button">Terug</button>
+        <span class="sp"></span>
+        <button id="w-skip" class="ghost" type="button" hidden>Intro overslaan</button>
+        <button id="w-next" class="btn" type="button">Verder</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="s-start" hidden>
+    <div style="display:flex;flex-direction:column;gap:22px">
+      <div class="agebar"><span>Je bent <b id="a-age"></b> · <span id="a-lvl"></span> · Jouw kapper: <b id="a-crew"></b></span>
+        <div class="row"><button id="a-change" class="ghost" type="button">Andere leeftijd</button><button id="c-change" class="ghost" type="button">Andere kapper</button><button id="w-again" class="ghost" type="button">Uitleg</button></div></div>
+      <h2 class="h2">Wie mag er bij Capaldi in de stoel?</h2>
+      <div id="dex" class="dex"></div>
+      <div class="two">
+        <div class="panel how">
+          <h3>Zo werkt het</h3>
+          <ol>
+            <li><b>Level 1, tondeuse:</b> houd je vinger of muis ingedrukt en beweeg over de baard. Alles wat de tondeuse raakt gaat eraf.</li>
+            <li><b>Level 2, schaar:</b> sleep snel door de haren op het hoofd om te knippen.</li>
+            <li><b>Stop bij de streepjes.</b> Groen is precies goed, rood is te kort.</li>
+            <li><b>Groeit aan!</b> Het haar groeit vanzelf weer aan. Knip het nog een keer bij, dan pak je weer punten.</li>
+            <li><b>Pas op:</b> sommige monsters kunnen niet stilzitten! Wacht tot ze even stoppen.</li>
+            <li><b>Gouden lok?</b> Tik hem snel aan, dan vangt Lokkie hem voor 50 bonuspunten.</li>
+            <li><b>Sterren verdienen</b> speelt nieuwe kappers vrij. Kies ze via "Andere kapper".</li>
+            <li>Alles netjes binnen de tijd? Dan krijg je 3 sterren!</li>
+          </ol>
+        </div>
+        <div class="panel">
+          <h3>Top 5 kappers <small id="b-grp" style="font-family:var(--f-body);font-size:13px;color:var(--muted)"></small></h3>
+          <ol id="board" class="board"></ol>
+          <p class="note">De beste kapper van de maand wint een prijs bij Capaldi. Laat je score zien bij de balie.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="s-play" hidden>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="hud">
+        <div class="who"><span id="h-lvl" class="lvl"></span><span id="h-name"></span></div>
+        <div class="stat" id="st-score"><small>Score</small><b id="h-score">0</b></div>
+        <div class="stat" id="st-neat"><small>Netjes</small><b id="h-neat">0/0</b></div>
+        <button id="quit" class="ghost" type="button">Stoppen</button>
+        <div class="timebar"><i id="h-time"></i></div>
+      </div>
+      <div class="stage"><canvas id="cv" aria-label="Speelveld: maak het monster netjes"></canvas></div>
+      <div class="say" id="say-play"><canvas width="136" height="136" aria-hidden="true"></canvas><p class="bubble" aria-live="polite"><b></b><span></span></p></div>
+      <p class="hint" id="h-hint"></p>
+    </div>
+  </section>
+
+  <section id="s-end" hidden>
+    <div class="result panel">
+      <canvas id="end-cv" aria-hidden="true"></canvas>
+      <div class="res-txt">
+        <p class="eyebrow" id="e-eyebrow"></p>
+        <h2 id="e-title"></h2>
+        <div id="e-stars" class="stars"></div>
+        <p class="big"><span id="e-score">0</span> punten</p>
+        <div class="split"><span id="e-l1"></span><span id="e-l2"></span></div>
+        <div class="say" id="say-end"><canvas width="136" height="136" aria-hidden="true"></canvas><p class="bubble"><b></b><span></span></p></div>
+        <form id="save">
+          <label for="nick">Jouw kappersnaam</label>
+          <div class="row">
+            <input id="nick" maxlength="16" autocomplete="off" placeholder="Bijv. Turbo Schaar">
+            <button type="button" id="dice" class="ghost">Verzin er één</button>
+          </div>
+          <p class="note">Gebruik een bijnaam, niet je echte naam.</p>
+          <button class="btn" type="submit">Score opslaan</button>
+        </form>
+        <p id="e-unlock" class="unlock" hidden></p>
+        <p id="saved" class="saved" hidden></p>
+        <div class="row">
+          <button class="btn" id="again" type="button">Nog een keer</button>
+          <button id="back" class="ghost" type="button">Ander monster</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>Een spel van <img class="flogo" src="assets/capaldi-logo.png" alt="Capaldi Kappers"> · bij ons is de kapper een feestje</footer>
+</div>
+<script src="js/game.js"></script>
+</body>
+</html>
