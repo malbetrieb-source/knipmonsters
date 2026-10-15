@@ -5,16 +5,16 @@ const rnd=s=>{const x=Math.sin(s*999.13)*43758.5453;return x-Math.floor(x);};
 const MOVE=['Staat stil','Beweegt langzaam','Stuitert wild rond'];
 const NAVY='#1d2b4f',GOLD='#c9a063',D=Math.PI/180;let TOL=.07;
 const GROUPS=[
- {id:0,from:4,to:5,label:'4 en 5 jaar',desc:'Alle monsters staan stil',time:1.5,grow:.5,tol:.1},
- {id:1,from:6,to:8,label:'6 t/m 8 jaar',desc:'Monsters bewegen een beetje',time:1.25,grow:.75,tol:.085},
- {id:2,from:9,to:10,label:'9 en 10 jaar',desc:'Monsters bewegen flink',time:1.1,grow:.9,tol:.075},
- {id:3,from:11,to:99,label:'11 jaar en ouder',desc:'Monsters bewegen wild',time:1,grow:1,tol:.07}];
+ {id:0,from:4,to:5,label:'4 en 5 jaar',desc:'Alle monsters staan stil',time:1.6,grow:.4,tol:.1,win:.8},
+ {id:1,from:6,to:8,label:'6 t/m 8 jaar',desc:'Monsters bewegen een beetje',time:1.4,grow:.55,tol:.09,win:.85},
+ {id:2,from:9,to:10,label:'9 en 10 jaar',desc:'Monsters bewegen flink',time:1.25,grow:.65,tol:.08,win:.85},
+ {id:3,from:11,to:99,label:'11 jaar en ouder',desc:'Monsters bewegen wild',time:1.15,grow:.75,tol:.075,win:.88}];
 let AGE=null,GRP=null;
 function eff(m){const g=GRP?GRP.id:3;
  if(g===0||!m.move)return{move:0};
  if(g===1)return{move:1,amp:.45,fq:.6};
- if(g===2)return m.move===1?{move:1,amp:.8,fq:.85}:{move:2,speed:m.speed*.6,pause:m.pause+.8};
- return m.move===1?{move:1,amp:1,fq:1}:{move:2,speed:m.speed,pause:m.pause};}
+ if(g===2)return m.move===1?{move:1,amp:.75,fq:.8}:{move:2,speed:m.speed*.55,pause:m.pause+1};
+ return m.move===1?{move:1,amp:.9,fq:.9}:{move:2,speed:m.speed*.8,pause:m.pause+.4};}
 const moveLabel=m=>{const e=eff(m);return e.move===0?'Staat stil':e.move===1?(e.amp<.6?'Wiebelt een beetje':'Beweegt langzaam'):(GRP&&GRP.id===2?'Stuitert rond':'Stuitert wild rond');};
 
 const M=[
@@ -404,7 +404,7 @@ function frame(ts){if(!S.run)return;const dt=Math.min(.05,(ts-S.last)/1000||0);S
    if(!S.growSaid){S.growSaid=true;say('#say-play',host(),'Kijk, dat haartje groeit weer aan! Knip het bij voor extra punten.','happy',true);}}
   s.wasNeat=neat;});
  render();hud();
- if(S.cd<=0&&S.neat/l.n>=.9)return levelDone(true);
+ if(S.cd<=0&&S.neat/l.n>=(GRP.win||.9))return levelDone(true);
  if(S.left<=0)return levelDone(false);
  requestAnimationFrame(frame);}
 function drawRoom(c,t){
@@ -554,7 +554,7 @@ function begin3(){const k=host(),D3=L3[k];S.lvl=3;S.ptr.down=false;humOff();
  const n=S.m.n;
  if(k==='fohnaldo')S.wet=Array(n).fill(1);
  if(k==='wilma'){S.waxed=Array(n).fill(false);S.waxA=Array(n).fill(0);}
- if(k==='gelda'){const r=GRP.id===0?[2,3,4]:GRP.id===3?[4,5,6]:[3,4,5];S.gel={rounds:r,round:0,seq:[],phase:'show',pt:-1,inp:0,lit:-1,tap:-1,tapT:0,said:false};newSeq();}
+ if(k==='gelda'){const r=GRP.id===0?[2,3,3]:GRP.id===1?[2,3,4]:[3,4,5];S.gel={rounds:r,round:0,seq:[],phase:'show',pt:-1,inp:0,lit:-1,tap:-1,tapT:0,said:false};newSeq();}
  S.banner=D3.banner;$('#h-lvl').textContent=D3.banner;$('#h-hint').textContent=D3.hint;$('#st-neat small').textContent=D3.label;
  say('#say-play',k,D3.intro,'happy',true);
  hud3();[0,.75,1.5].forEach(w=>tone(660,.12,'square',.05,w));tone(990,.3,'square',.06,2.25);}
@@ -580,7 +580,7 @@ function tick3(dt){const k=S.k3,m=S.m,n=m.n;
   S.p3=S.wet.filter(w=>w<=0).length/n;}
  if(k==='wilma'){for(let i=0;i<n;i++)if(S.waxed[i])S.waxA[i]=Math.min(1,S.waxA[i]+dt*4);S.p3=S.waxed.filter(Boolean).length/n;}
  if(k==='kardashian'){S.flash=Math.max(0,S.flash-dt*2.2);S.cool=Math.max(0,S.cool-dt);
-  if(S.freeze>0)S.freeze-=dt;else{const sp=(.9+.38*GRP.id)*(1+S.photos*.28);S.mt+=dt*sp;
+  if(S.freeze>0)S.freeze-=dt;else{const sp=(.8+.22*GRP.id)*(1+S.photos*.2);S.mt+=dt*sp;
    const rg=Math.max(R*.9,Math.min(W/2-R*1.25,R*1.9));S.ox=Math.sin(S.mt)*rg;S.oy=GRP.id>=2?Math.sin(S.mt*1.7)*R*.12:0;}
   CX=BX+S.ox;CY=BY+S.oy;S.p3=S.photos/3;}
  if(k==='gelda'){const g=S.gel;g.tapT=Math.max(0,g.tapT-dt);
@@ -817,9 +817,9 @@ addEventListener('resize',()=>{if(!$('#s-color').hidden&&!$('#c-edit').hidden&&C
 
 /* Tondeuse-tank */
 const TLV=[
- {name:'Het Pluizenveld',goal:.85,time:45,kam:2,bus:0,klit:0,pal:['#ffc928','#ff9f1c','#ff5fa2']},
- {name:'Haarlakstraat',goal:.85,time:50,kam:3,bus:2,klit:0,pal:['#a37dff','#ffe45c','#c86bff']},
- {name:'De Klittenjungle',goal:.8,time:55,kam:2,bus:2,klit:2,pal:['#4fa8ff','#22c3c3','#7fd3ff']}];
+ {name:'Het Pluizenveld',goal:.8,time:50,kam:2,bus:0,klit:0,pal:['#ffc928','#ff9f1c','#ff5fa2']},
+ {name:'Haarlakstraat',goal:.8,time:55,kam:3,bus:2,klit:0,pal:['#a37dff','#ffe45c','#c86bff']},
+ {name:'De Klittenjungle',goal:.75,time:60,kam:2,bus:2,klit:2,pal:['#4fa8ff','#22c3c3','#7fd3ff']}];
 const TK={run:false,lv:0,score:0,t:0,cd:0,left:0,lim:1,cs:20,WW:640,WH:800,cols:0,rows:0,hair:null,block:null,total:0,mowed:0,field:null,fctx:null,
  x:0,y:0,a:-Math.PI/2,stun:0,turbo:0,wide:0,combo:1,lastMow:-9,kams:[],bus:[],klit:[],pups:[],parts:[],floats:[],ptr:{down:false,x:0,y:0},keys:{},nextPup:0,res:[],last:0,said:{}};
 const tcv=$('#tcv');let tctx=null,TW=0,TH=0,TS=1,TOX=0,TOY=0;
@@ -839,7 +839,7 @@ function tBuild(){const L=TLV[TK.lv],cs=TK.cs;TK.cols=Math.floor(TK.WW/cs);TK.ro
  TK.total=0;for(let i=0;i<n;i++)if(!TK.block[i])TK.total++;TK.mowed=0;
  TK.field=document.createElement('canvas');TK.field.width=TK.cols*cs*FS;TK.field.height=TK.rows*cs*FS;TK.fctx=TK.field.getContext('2d');TK.fctx.scale(FS,FS);
  for(let cy=0;cy<TK.rows;cy++)for(let cx=0;cx<TK.cols;cx++)tCellDraw(cx,cy);
- const sp=(.55+.15*GRP.id);
+ const sp=(.5+.1*GRP.id);
  TK.bus=Array.from({length:L.bus},(_,k)=>({x:TK.WW*(.25+.5*k),y:TK.WH*.3,vx:(k?-1:1)*110*sp,vy:80*sp,r:18,ph:0}));
  TK.klit=Array.from({length:L.klit},(_,k)=>({x:k?TK.WW-40:40,y:60,r:22,tx:0,ty:0,sp:55*sp,away:0,rot:0}));
  TK.klit.forEach(newKlitTarget);TK.pups=[];TK.parts=[];TK.floats=[];
@@ -1058,7 +1058,7 @@ function drawTool(c,id,x,y,s){c.save();c.translate(x,y);c.lineJoin='round';c.lin
  c.restore();}
 const MS={cards:[],open:[],lock:false,pairs:0,moves:0,n:0,t0:0,run:false};
 const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
-function startMem(){if(!GRP)return;S.run=false;S.mode='mem';const n=GRP.id===0?6:GRP.id===1?8:10;
+function startMem(){if(!GRP)return;S.run=false;S.mode='mem';const n=GRP.id===0?6:GRP.id===3?10:8;
  const pick=shuffle(TOOLS.slice()).slice(0,n),deck=shuffle([...pick,...pick].map(t=>({t})));
  Object.assign(MS,{cards:deck,open:[],lock:false,pairs:0,moves:0,n,t0:performance.now(),run:true});
  const g=$('#mgrid');g.textContent='';g.dataset.n=n;const badge=document.querySelector('.glogo svg').outerHTML;
