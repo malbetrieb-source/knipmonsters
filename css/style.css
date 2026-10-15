@@ -334,5 +334,5 @@ footer p{margin:0}
 .brand .bico{height:1.45em;width:auto;align-self:center}
 .brand .bword{height:.7em;width:auto}
 .brand .bword.rf{height:.74em}
-.credit{font-size:11px;color:var(--muted);margin-top:22px!important;opacity:.85}
+.credit{font-size:9px;color:var(--muted);margin-top:22px!important;opacity:.85}
 .credit .bico{opacity:.85}
