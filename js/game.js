@@ -774,8 +774,8 @@ function startColor(){S.run=false;MS.run=false;S.mode='color';$('#c-pick').hidde
 async function openPlate(p){if(p.img&&!p._im){try{p._im=await loadImg(p.img);}catch(e){return;}}const b=buildPlate(p);p._line=b.line;Object.assign(CK,b,{plate:p,undo:[],dirty:false});
  const paint=document.createElement('canvas');paint.width=paint.height=CP;CK.paint=paint;CK.pctx=paint.getContext('2d',{willReadFrequently:true});CK.pctx.fillStyle='#fff';CK.pctx.fillRect(0,0,CP,CP);
  $('#c-pick').hidden=true;$('#c-edit').hidden=false;$('#c-done').hidden=true;$('#c-title').textContent=p.name;
- const cv=$('#c-cv'),sz=Math.round(cv.getBoundingClientRect().width)||500;CK.dctx=fitCanvas(cv,sz,sz);CK.sz=sz;setTool('fill');drawColor();updUndo();
- say('#say-color',host(),'Kies een kleur. Tik dan op een vlak om het in te kleuren.','happy');}
+ const cv=$('#c-cv'),sz=Math.round(cv.getBoundingClientRect().width)||500;CK.dctx=fitCanvas(cv,sz,sz);CK.sz=sz;setTool('brush');drawColor();updUndo();
+ say('#say-color',host(),'Kies een kleur en kleur met je vinger. Met de gum maak je het weer wit.','happy');}
 function drawColor(){const c=CK.dctx,s=CK.sz;if(!c)return;c.fillStyle='#fff';c.fillRect(0,0,s,s);c.imageSmoothingQuality='high';c.drawImage(CK.paint,0,0,s,s);c.drawImage(CK.line,0,0,s,s);}
 function pushUndo(){CK.undo.push(CK.pctx.getImageData(0,0,CP,CP));if(CK.undo.length>15)CK.undo.shift();updUndo();}
 function updUndo(){$('#c-undo').disabled=!CK.undo.length;}
@@ -789,7 +789,7 @@ function fillAt(p){let x=Math.round(p.x),y=Math.round(p.y);if(x<0||y<0||x>=CP||y
 function brushLine(a,b){const c=CK.pctx;c.strokeStyle=CK.tool==='erase'?'#fff':CK.color;c.lineWidth=CK.tool==='erase'?34:20;c.lineCap='round';c.lineJoin='round';c.beginPath();c.moveTo(a.x,a.y);c.lineTo(b.x+.01,b.y);c.stroke();CK.dirty=true;drawColor();}
 function setTool(t){CK.tool=t;document.querySelectorAll('.ctool[data-tool]').forEach(b=>{const on=b.dataset.tool===t;b.classList.toggle('on',on);b.setAttribute('aria-pressed',String(on));});
  $('#c-cv').dataset.tool=t;}
-function setColor(col){CK.color=col;if(CK.tool==='erase')setTool('fill');document.querySelectorAll('.swatch').forEach(s=>{const on=s.dataset.c===col;s.classList.toggle('on',on);s.setAttribute('aria-pressed',String(on));});}
+function setColor(col){CK.color=col;if(CK.tool==='erase')setTool('brush');document.querySelectorAll('.swatch').forEach(s=>{const on=s.dataset.c===col;s.classList.toggle('on',on);s.setAttribute('aria-pressed',String(on));});}
 {const pal=$('#c-pal');PAL.forEach(([col,nm])=>{const b=document.createElement('button');b.type='button';b.className='swatch';b.dataset.c=col;b.style.setProperty('--sw',col);b.setAttribute('aria-label',nm);b.title=nm;b.addEventListener('click',()=>{ac();tone(660,.05,'triangle',.04);setColor(col);});pal.append(b);});setColor(PAL[0][0]);}
 document.querySelectorAll('.ctool[data-tool]').forEach(b=>b.addEventListener('click',()=>{ac();setTool(b.dataset.tool);}));
 $('#c-undo').addEventListener('click',()=>{const im=CK.undo.pop();if(im){CK.pctx.putImageData(im,0,0);drawColor();}updUndo();});
@@ -1145,7 +1145,7 @@ const KNIP=[
  {k:'klaar',who:()=>host(),say:['Super, je weet alles!','Kies nu wie er bij Capaldi in de stoel mag.'],next:'Naar de monsters'}];
 const MEMU=[{k:'mem',who:()=>host(),say:['Bij memory liggen alle kaartjes omgedraaid.','Tik op twee kaartjes. Zijn ze hetzelfde? Dan heb je een paar!','Bij elk paar vertel ik wat de kapper ermee doet.'],next:'Spelen!'}];
 const TANKU=[{k:'tank',who:()=>host(),say:['Dit is je tondeuse-tank! Het hele veld zit vol wild haar.','Houd je vinger een stukje vóór de tank. Hij rijdt erheen en maait alles plat.','Maai genoeg haar voordat de tijd op is. Pas op voor haarlakbussen en rij de klitballen kapot!'],next:'Starten!'}];
-const COLU=[{k:'kleur',who:()=>host(),say:['Kies eerst een kleurplaat.','Tik op een kleur en dan op een vlak. Hup, ingekleurd!','Met de kwast kun je ook zelf tekenen. Rustig aan, er is geen tijd.'],next:'Kleuren!'}];
+const COLU=[{k:'kleur',who:()=>host(),say:['Kies eerst een kleurplaat.','Tik op een kleur en kleur met je vinger, net als met een kwast.','Kleur je buiten de lijntjes? Met de gum maak je het weer wit. Rustig aan, er is geen tijd.'],next:'Kleuren!'}];
 let WSUB=0,STEPS=GEN,AFTER=null,AFTERSEEN=null;
 const parts=st=>{const v=typeof st.say==='function'?st.say():st.say;return Array.isArray(v)?v:[v];};
 function talk(){const st=STEPS[WI],p=parts(st),k=Math.min(WSUB,p.length-1);
@@ -1203,11 +1203,12 @@ let KLINE=null;
 function demoKleur(c,t){const w=380,h=300;c.fillStyle='#d6f6f4';c.fillRect(0,0,w,h);
  if(!KLINE){const p=PLATES[3];if(!p._line){p._line=buildPlate(p).line;}KLINE=p._line;}
  const S2=.42,ox=w/2-300*S2,oy=8;c.fillStyle='#fff';c.strokeStyle=NAVY;c.lineWidth=3;c.beginPath();c.roundRect(ox,oy,600*S2,600*S2,14);c.fill();c.stroke();
- const per=4.5,ph=t%per,tx=ox+300*S2,ty=oy+260*S2,r=Math.max(0,(ph-1.2))*120;
- c.save();c.beginPath();c.roundRect(ox,oy,600*S2,600*S2,14);c.clip();c.beginPath();c.arc(tx,ty,r,0,Math.PI*2);c.clip();c.translate(ox,oy);c.scale(S2,S2);drawCrew(c,'lokkie',300,290,150,'happy');c.restore();
+ const per=4.5,ph=t%per,prog=Math.min(1,Math.max(0,(ph-.4)/3)),P=[];for(let k=0;k<=40;k++){const u=k/40;P.push([ox+(170+260*u)*S2,oy+(200+150*Math.abs(Math.sin(u*Math.PI*3))+u*40)*S2]);}
+ const nP=Math.max(1,Math.round(prog*40));c.save();c.beginPath();c.roundRect(ox,oy,600*S2,600*S2,14);c.clip();c.strokeStyle='#ffc928';c.lineWidth=26;c.lineCap='round';c.lineJoin='round';c.beginPath();c.moveTo(P[0][0],P[0][1]);for(let k=1;k<=nP;k++)c.lineTo(P[k][0],P[k][1]);if(prog>0)c.stroke();c.restore();
+ const tx=P[nP][0],ty=P[nP][1];
  c.drawImage(KLINE,ox,oy,600*S2,600*S2);
  ['#ff5fa2','#ffc928','#22c3c3','#8a5cf6'].forEach((col,i)=>{c.fillStyle=col;c.strokeStyle=NAVY;c.lineWidth=2.5;c.beginPath();c.arc(ox+600*S2+28,40+i*42,14,0,Math.PI*2);c.fill();c.stroke();if(i===1){c.strokeStyle='#ff5fa2';c.lineWidth=3;c.beginPath();c.arc(ox+600*S2+28,40+i*42,19,0,Math.PI*2);c.stroke();}});
- if(ph<1.3)finger(c,tx,ty);tag(c,ph<1.3?'Tik op een vlak':'Ingekleurd!',w/2,h-20,ph<1.3?NAVY:'#2fb36b',15,true);}
+ if(prog<1)finger(c,tx,ty);tag(c,prog<1?'Kleur met je vinger':'Mooi gekleurd!',w/2,h-20,prog<1?NAVY:'#2fb36b',15,true);}
 function drawDemo(c,k,t){const w=380,h=300,m=M[0],f=fitR(w,h),R=f.R,cy=f.cy,cx=w/2;c.clearRect(0,0,w,h);
  const sb=styledBeard(m),sh=styledLens(m);
  if(k==='mem'){demoMem(c,t);return;}

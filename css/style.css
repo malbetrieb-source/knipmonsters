@@ -308,7 +308,7 @@ body.phone #s-tank .tgoal{display:none}
 .cboard{background:#fff;border:3px solid var(--navy);border-radius:22px;box-shadow:0 6px 0 var(--navy);overflow:hidden;max-width:620px;width:100%;justify-self:center}
 #c-cv{display:block;width:100%;height:auto;aspect-ratio:1;touch-action:none;cursor:crosshair}
 .cside{display:flex;flex-direction:column;gap:14px;min-width:0}
-.ctools{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.ctools{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .ctool{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 4px;background:#fff;color:var(--navy);border:2.5px solid var(--navy);border-radius:14px;box-shadow:0 3px 0 var(--navy);font-weight:700;font-size:12px}
 .ctool.on{background:var(--sun)}
 .ctool:disabled{opacity:.4;cursor:not-allowed}
