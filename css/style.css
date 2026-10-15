@@ -21,7 +21,9 @@ button{font:inherit;cursor:pointer}
 button:focus-visible,input:focus-visible{outline:3px solid var(--pink);outline-offset:3px}
 
 .top{display:flex;align-items:center;justify-content:space-between;gap:16px}
-.glogo{display:flex;align-items:center;gap:10px}
+.glogo{display:flex;align-items:center;gap:10px;background:none;border:0;padding:0;color:inherit;font:inherit;text-align:left;cursor:pointer;border-radius:14px}
+.glogo:hover svg{transform:rotate(-8deg)}
+.glogo svg{transition:transform .2s}
 .glogo svg{width:52px;height:52px;flex:none;filter:drop-shadow(0 3px 0 var(--navy));border-radius:50%}
 .gl-t{display:flex;flex-direction:column;line-height:1}
 .gl-t b{font-family:var(--f-brand);font-weight:700;font-size:27px;color:var(--navy);letter-spacing:.1em}

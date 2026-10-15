@@ -1193,6 +1193,7 @@ function drawDemo(c,k,t){const w=380,h=300,m=M[0],f=fitR(w,h),R=f.R,cy=f.cy,cx=w
 if(DB.device)setDevice(DB.device);
 if(DB.device)setDevice(DB.device);
 renderDex();renderBoard();renderCrew();renderGames();toStart();
+$('#home-logo').addEventListener('click',()=>{ac();S.run=false;MS.run=false;TK.run=false;humOff();AFTER=null;if(!$('#meet').hidden)closeMeet();meetQ=[];try{speechSynthesis.cancel();}catch(e){}toStart();});
 if(/[?&]test\b/.test(location.search))window.__KM={TK,startTank,tLevelDone,S,MS,M,CK,PLATES,openPlate,startColor,fillAt,start,begin3,frame3,finish,startMem,openMeet,setAge,toStart,get GRP(){return GRP;}};
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{renderDex();renderCrew();renderGames();});
 })();
