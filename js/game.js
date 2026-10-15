@@ -173,7 +173,7 @@ const CREW={
   pk:{tol:.012},lines:{i1:'Mijn formule: baard plus tondeuse is een {s}. Aan de slag!',i2:'Mijn voorspelling: jij knipt een perfecte {s}. Laat maar zien!',short:['Hmm, foutje in de berekening. Te kort!','Dat klopt niet met mijn formule!'],half:'Fascinerend! Je bent al op de helft.',still:'Hij staat stil, precies volgens plan! Nu knippen!'}},
  wilma:{name:'Wilma Wortelwax',role:'Uitvinder van de gekste waxkapsels',skin:'#f6d2b8',hair:'#ff7a1a',need:9,perk:'Gouden lokken komen vaker',
   pk:{gold:true},lines:{i1:'Ik ben Wilma Wortelwax, uitvinder! Trim de baard tot een {s}, dan doe ik er wax in.',i2:'Knip een {s}, dan bouw ik er iets geks van!',short:['Te kort! Daar kan zelfs mijn superwax niks aan plakken.','Oeps, te kort! Stop bij het streepje.'],half:'Boing! Mijn uitvindersbrein zegt: bijna klaar!',still:'Stilstaan! Nu is je kans!'}},
- petra:{name:'Petra Puntkam',role:'Duldt geen haar verkeerd',skin:'#c98f63',hair:'#2a2438',tag:'Jury'},
+ petra:{name:'Petra Puntkam',role:'Helpt je steeds beter knippen',skin:'#c98f63',hair:'#2a2438',tag:'Jury'},
  lokkie:{name:'Lokkie',role:'Vangt alle losse lokken',tag:'Mascotte'}};
 const PICKABLE=['haarriet','scharlotte','fohnaldo','kardashian','gelda','wilma'];
 const totalStars=()=>M.reduce((n,m)=>n+(DB.dex[m.id]||0),0)+(DB.mem||0)+(DB.tank||0);
@@ -279,7 +279,7 @@ function renderCrew(){const el=$('#crew');el.textContent='';const ts=totalStars(
  [...PICKABLE,'petra','lokkie'].forEach(id=>{const P=CREW[id],pickable=!!P.lines,open=!pickable||crewOpen(id),chosen=pickable&&host()===id;
   const d=document.createElement('div');d.className='mate'+(open?'':' soon')+(chosen?' chosen':'');const cv=document.createElement('canvas');cv.setAttribute('aria-hidden','true');d.append(cv);
   const c=fitCanvas(cv,160,150);const big=id==='fohnaldo'||id==='wilma'||id==='gelda';
-  if(id==='lokkie')drawCrew(c,id,80,78,42,'happy',!open);else drawCrew(c,id,80,big?74:62,big?28:32,id==='petra'?'stern':'happy',!open);
+  if(id==='lokkie')drawCrew(c,id,80,78,42,'happy',!open);else drawCrew(c,id,80,big?74:62,big?28:32,'happy',!open);
   if(!open){c.fillStyle='#fff';c.strokeStyle=NAVY;c.lineWidth=4;c.font='46px Bungee, Impact, sans-serif';c.textAlign='center';c.textBaseline='middle';c.strokeText('?',80,64);c.fillText('?',80,64);}
   const h=document.createElement('h3');h.textContent=open?P.name:'???';d.append(h);
   const p=document.createElement('p');p.textContent=open?P.role:`Verdien eerst ${P.need} sterren`;d.append(p);
@@ -531,7 +531,7 @@ function finish(){S.run=false;S.ptr.down=false;humOff();const m=S.m,[a,b,c3]=S.r
  $('#e-l2').textContent=`Haar (${m.style}): ${'★'.repeat(b.stars)||'–'}`;
  const e3=$('#e-l3');e3.hidden=!c3;if(c3)e3.textContent=`${L3[c3.l3].name}: ${'★'.repeat(c3.stars)||'–'}`;$('#back').textContent='Ander monster';
  $('#save').hidden=score<=0;$('#saved').hidden=true;
- say('#say-end','petra',['Hmm, daar mag nog wat af. Probeer het nog een keer!','Mwah. Er zit een begin in. Nog even oefenen!','Niet slecht... Bijna geen haar verkeerd.','Hm. Ik zie... geen enkel haar verkeerd. Knap hoor!'][stars],stars===3?'happy':'stern');
+ say('#say-end','petra',['Goed geprobeerd! Tip: knip rustig tot aan het groene streepje. Dan lukt het vast!','Je bent op weg! Let goed op het streepje, dan wordt het nog mooier.','Wat netjes! Nog een klein beetje preciezer en je hebt alle sterren.','Wauw, perfect geknipt! Daar zou ik zelf een prijs voor geven!'][stars],stars?'happy':'stern');
  if(!c3){if(b.win)fanfare();else tone(330,.3,'triangle',.07);}
  show('#s-end');preview($('#end-cv'),m,300,280,false,false,'happy',S.beard.map(s=>s.Lf),S.hair.map(s=>s.Lf));
  renderDex();renderBoard();}
@@ -997,7 +997,7 @@ function tFinish(){TK.run=false;humOff();const done=TK.res.filter(r=>r.win).leng
  const st=$('#e-stars');st.innerHTML=[1,2,3].map(i=>`<span class="${i<=stars?'on':''}">★</span>`).join('');st.setAttribute('aria-label',`${stars} van 3 sterren`);
  $('#e-score').textContent=score;const last=TK.res[TK.res.length-1];$('#e-l1').textContent=`Level ${TK.res.length} van 3`;$('#e-l2').textContent=`${Math.floor(last.pct*100)}% gemaaid`;$('#e-l3').hidden=true;$('#back').textContent='Ander spel';
  $('#save').hidden=score<=0;$('#saved').hidden=true;
- say('#say-end','petra',['Hmm, daar staat nog een heel bos. Probeer het nog een keer!','Mwah. Eén veld is netjes. Nu de rest nog!','Niet slecht... Bijna overal kaal!','Hm. Geen sprietje meer te zien. Knap hoor!'][stars],stars===3?'happy':'stern');
+ say('#say-end','petra',['Goed geprobeerd! Tip: rij in rechte banen, dan maai je sneller.','Mooi begin! Probeer ook de hoekjes mee te pakken.','Super gedaan! Bijna alles is plat. Nog een paar sprietjes!','Wauw, geen sprietje meer te zien. Echt een topper!'][stars],stars?'happy':'stern');
  if(done)fanfare();else tone(330,.3,'triangle',.07);show('#s-end');
  const c=fitCanvas($('#end-cv'),300,280);c.clearRect(0,0,300,280);c.fillStyle='#ffd6ea';c.beginPath();c.roundRect(10,30,280,220,24);c.fill();
  for(let q=0;q<14;q++){const x=30+q*18,P=['#ffc928','#ff9f1c','#ff5fa2'];if(q>4&&q<10)continue;c.strokeStyle=NAVY;c.lineWidth=5;c.lineCap='round';c.beginPath();c.moveTo(x,230);c.quadraticCurveTo(x,190,x+6,170);c.stroke();c.strokeStyle=P[q%3];c.lineWidth=3;c.stroke();}
@@ -1095,7 +1095,7 @@ function finishMem(){const n=MS.n,secs=(performance.now()-MS.t0)/1000;
  const st=$('#e-stars');st.innerHTML=[1,2,3].map(i=>`<span class="${i<=stars?'on':''}">★</span>`).join('');st.setAttribute('aria-label',`${stars} van 3 sterren`);
  $('#e-score').textContent=score;$('#e-l1').textContent=`${n} paren`;$('#e-l2').textContent=`${MS.moves} beurten`;$('#e-l3').hidden=true;$('#back').textContent='Ander spel';
  $('#save').hidden=false;$('#saved').hidden=true;
- say('#say-end','petra',['','Mwah. Dat waren veel beurten. Volgende keer gaat het vast sneller!','Niet slecht... Je kent de spullen van de kapper al aardig.','Hm. Ik zie... een echte kapper in de dop!'][stars],stars===3?'happy':'stern');
+ say('#say-end','petra',['','Goed gedaan! Tip: onthoud waar de kaartjes liggen, dan heb je minder beurten nodig.','Knap! Je kent de spullen van de kapper al heel goed.','Wauw, wat een geheugen! Jij bent een echte kapper in de dop!'][stars],stars?'happy':'stern');
  fanfare();show('#s-end');
  const c=fitCanvas($('#end-cv'),300,280);c.clearRect(0,0,300,280);const ids=MS.cards.slice(0,4).map(x=>x.t.id);
  ids.forEach((id,k)=>{const x=82+(k%2)*136,y=78+Math.floor(k/2)*128;c.save();c.translate(x,y);c.rotate((k%2?1:-1)*.08);c.fillStyle='#fff';c.strokeStyle=NAVY;c.lineWidth=3;c.beginPath();c.roundRect(-56,-60,112,120,14);c.fill();c.stroke();c.restore();drawTool(c,id,x,y,40);});
@@ -1139,7 +1139,7 @@ const GEN=[
 const KNIP=[
  {k:'tondeuse',who:()=>host(),say:['Level 1: houd je vinger op de baard en schuif de tondeuse eroverheen.']},
  {k:'schaar',who:()=>host(),say:['Level 2: veeg met je vinger door het haar om te knippen.']},
- {k:'streepjes',who:'petra',say:['Ik ben Petra. Ik kijk of je netjes knipt. Knip tot aan het streepje.','Groen is goed. Rood is te kort.']},
+ {k:'streepjes',who:'petra',say:['Ik ben Petra. Ik help je om netjes te knippen. Knip tot aan het streepje.','Groen is goed. Rood is net iets te kort, maar dat kan iedereen gebeuren!']},
  {k:'groei',who:()=>host(),say:['Goed nieuws: het haar groeit steeds weer aan!','Zie je "Groeit aan!"? Knip het nog een keer, dan krijg je weer extra punten.']},
  {k:'goud',who:'lokkie',say:['Ik ben Lokkie! Zie je een gouden lok? Tik er snel op voor 50 extra punten!']},
  {k:'klaar',who:()=>host(),say:['Super, je weet alles!','Kies nu wie er bij Capaldi in de stoel mag.'],next:'Naar de monsters'}];
