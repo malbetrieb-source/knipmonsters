@@ -723,7 +723,7 @@ const PLATES=[
  {id:'award1',name:'Award-look 1',award:true,img:'assets/kleurplaten/award-1.png'},
  {id:'award2',name:'Award-look 2',award:true,img:'assets/kleurplaten/award-2.png'},
  {id:'spullen',name:'Kappersspullen',draw:c=>{plateBg(c);[['schaar',160,150],['fohn',440,150],['kam',160,395],['spiegel',440,395]].forEach(([id,x,y])=>{c.save();c.fillStyle='#fff';c.strokeStyle=NAVY;c.lineWidth=5;c.beginPath();c.roundRect(x-112,y-105,224,210,26);c.fill();c.stroke();c.restore();drawTool(c,id,x,y,90);});}}];
-const PAL=[['#ff5fa2','roze'],['#ff4d4d','rood'],['#ff8a3d','oranje'],['#ffc928','geel'],['#8ad94a','groen'],['#22c3c3','turquoise'],['#3fa9ff','blauw'],['#8a5cf6','paars'],['#a0673b','bruin'],['#f3cba9','huidkleur'],['#c9a063','Capaldi-goud'],['#1d2b4f','donkerblauw']];
+const PAL=[['#ff4d4d','rood'],['#ff5fa2','roze'],['#d6338a','fuchsia'],['#ff8a3d','oranje'],['#ffb37a','perzik'],['#ffc928','geel'],['#fff07a','lichtgeel'],['#c6ef5a','limoen'],['#8ad94a','groen'],['#2e9e4f','donkergroen'],['#22c3c3','turquoise'],['#9fe8ff','lichtblauw'],['#3fa9ff','blauw'],['#2f5bd8','kobaltblauw'],['#c4a7ff','lila'],['#8a5cf6','paars'],['#f3cba9','huidkleur'],['#a0673b','bruin'],['#5e3a22','donkerbruin'],['#c9a063','Capaldi-goud'],['#ffffff','wit'],['#9aa3b5','grijs'],['#1d2b4f','donkerblauw'],['#2a2a2a','zwart']];
 const CK={plate:null,tool:'fill',color:PAL[0][0],paint:null,pctx:null,line:null,mask:null,lab:null,lists:null,undo:[],dctx:null,drawing:false,last:null,dirty:false};
 const ARTKEY='capaldi-kleurplaten-v1';
 function loadArt(){try{return JSON.parse(localStorage.getItem(ARTKEY)||'[]');}catch(e){return[];}}

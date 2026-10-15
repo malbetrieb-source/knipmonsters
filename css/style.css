@@ -313,7 +313,7 @@ body.phone #s-tank .tgoal{display:none}
 .ctool.on{background:var(--sun)}
 .ctool:disabled{opacity:.4;cursor:not-allowed}
 .ctool:active{transform:translateY(2px);box-shadow:0 1px 0 var(--navy)}
-.pal{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+.pal{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:7px}
 .swatch{aspect-ratio:1;border-radius:50%;background:var(--sw);border:3px solid var(--navy);box-shadow:0 3px 0 var(--navy);padding:0;min-width:0}
 .swatch.on{outline:4px solid var(--pink);outline-offset:3px;transform:scale(1.08)}
 .cdone{display:flex;flex-direction:column;align-items:center;gap:14px}
