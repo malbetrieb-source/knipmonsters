@@ -239,17 +239,22 @@ body.phone .lvl{font-size:11px;padding:2px 9px}
 @media (prefers-reduced-motion:reduce){.card,.btn,.dev{transition:none}}
 
 /* spelkeuze */
-.games{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
-.game{display:flex;align-items:center;gap:14px;text-align:left;padding:12px 16px;background:#fff;color:var(--navy);border:3px solid var(--navy);border-radius:20px;box-shadow:0 5px 0 var(--navy)}
+.game{display:flex;flex-direction:column;align-items:stretch;gap:12px;text-align:left;padding:14px;background:#fff;color:var(--navy);border:3px solid var(--navy);border-radius:20px;box-shadow:0 5px 0 var(--navy);min-width:0}
 .game:hover{transform:translateY(-3px)}
 .game:active{transform:translateY(3px);box-shadow:0 2px 0 var(--navy)}
-.game canvas{flex:none;width:120px;height:auto;aspect-ratio:160/110;border-radius:14px;background:#d4f2ff;border:2.5px solid var(--navy)}
-.game>span{display:flex;flex-direction:column;gap:4px;min-width:0}
-.game b{font-family:var(--f-game);font-weight:400;font-size:19px}
-.game small{font-size:14px;color:var(--muted)}
+.game canvas{display:block;width:100%;height:auto;aspect-ratio:160/110;border-radius:14px;background:#d4f2ff;border:2.5px solid var(--navy)}
+.game>span{display:flex;flex-direction:column;gap:6px;min-width:0;padding-inline:2px}
+.game b{font-family:var(--f-game);font-weight:400;font-size:clamp(17px,2.1vw,20px);line-height:1.15;overflow-wrap:anywhere}
+.game small{font-size:14px;line-height:1.4;color:var(--muted)}
+.games{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:stretch}
+@media (max-width:760px){.games{grid-template-columns:1fr}.game{flex-direction:row;align-items:center}.game canvas{width:120px;flex:none}}
+.wgames{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.wgames span{padding:10px 18px;border-radius:999px;border:3px solid var(--navy);box-shadow:0 4px 0 var(--navy);font-family:var(--f-game);font-size:17px;background:#fff}
+.wgames .wg1{background:#fff2c2}.wgames .wg2{background:#ffe3f0}.wgames .wg3{background:#d6f6f4}
 .mstars{flex-direction:row!important;font-size:18px;color:#d3d8e8;letter-spacing:2px}
 .mstars .on{color:var(--sun);-webkit-text-stroke:1px var(--navy)}
 #g-mem canvas{background:#ffe3f0}
+#g-color canvas{background:#d6f6f4}
 
 /* memory */
 .memwrap{display:flex;flex-direction:column;gap:12px;max-width:720px;margin:0 auto;width:100%}

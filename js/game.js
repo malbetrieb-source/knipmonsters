@@ -653,7 +653,7 @@ addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#meet').hidden)closeMeet
 $('#meet-pick').addEventListener('click',()=>{DB.crew=meetId;persist();tone(784,.1,'square',.05);tone(1046,.15,'square',.05,.08);renderCrew();updateAgebar();
  const pb=$('#meet-pick');pb.textContent='Dit is jouw kapper';pb.disabled=true;$('#meet-close').textContent='Verder';clearTimeout(meetTimer);say('#say-meet',meetId,'Top! Ik ben nu jouw kapper.','happy');});
 
-$('#quit').addEventListener('click',()=>{S.run=false;humOff();show('#s-start');renderDex();renderCrew();});
+$('#quit').addEventListener('click',()=>{S.run=false;humOff();renderCrew();toKnip();});
 /* Kapperskleurplaat */
 const CP=600;
 function plateBg(c){c.fillStyle='#fff';c.fillRect(0,0,CP,CP);c.strokeStyle=NAVY;c.lineWidth=5;c.lineJoin='round';
@@ -755,12 +755,12 @@ $('#c-print').addEventListener('click',()=>{if(CK.final)printImg(CK.final.toData
 $('#c-print-empty').addEventListener('click',()=>{if(!CK.plate)return;const keep=CK.paint;const blank=document.createElement('canvas');blank.width=blank.height=CP;const bc=blank.getContext('2d');bc.fillStyle='#fff';bc.fillRect(0,0,CP,CP);CK.paint=blank;const f=finalImage();CK.paint=keep;printImg(f.toDataURL('image/png'));});
 $('#c-other').addEventListener('click',()=>{$('#c-edit').hidden=true;$('#c-done').hidden=true;$('#c-pick').hidden=false;renderPlates();say('#say-color',host(),'Kies een kleurplaat.','happy');});
 $('#c-again').addEventListener('click',()=>$('#c-other').click());
-$('#c-quit').addEventListener('click',()=>{show('#s-start');renderGames();});
+$('#c-quit').addEventListener('click',()=>{toStart();});
 $('#g-color').addEventListener('click',()=>{ac();startColor();});
 addEventListener('resize',()=>{if(!$('#s-color').hidden&&!$('#c-edit').hidden&&CK.plate){const cv=$('#c-cv'),sz=Math.round(cv.getBoundingClientRect().width);if(sz&&sz!==CK.sz){CK.dctx=fitCanvas(cv,sz,sz);CK.sz=sz;drawColor();}}});
 
 $('#again').addEventListener('click',()=>S.mode==='mem'?startMem():start(S.m));
-$('#back').addEventListener('click',()=>{show('#s-start');renderDex();renderCrew();renderGames();updateAgebar();});
+$('#back').addEventListener('click',()=>{renderCrew();if(S.mode==='mem')toStart();else toKnip();});
 /* Kappersmemory */
 const TOOLS=[
  {id:'schaar',name:'Schaar',say:'Een schaar! Daarmee knipt de kapper je haar, heel voorzichtig.'},
@@ -850,8 +850,8 @@ function finishMem(){const n=MS.n,secs=(performance.now()-MS.t0)/1000;
  const c=fitCanvas($('#end-cv'),300,280);c.clearRect(0,0,300,280);const ids=MS.cards.slice(0,4).map(x=>x.t.id);
  ids.forEach((id,k)=>{const x=82+(k%2)*136,y=78+Math.floor(k/2)*128;c.save();c.translate(x,y);c.rotate((k%2?1:-1)*.08);c.fillStyle='#fff';c.strokeStyle=NAVY;c.lineWidth=3;c.beginPath();c.roundRect(-56,-60,112,120,14);c.fill();c.stroke();c.restore();drawTool(c,id,x,y,40);});
  renderBoard();renderCrew();}
-$('#m-quit').addEventListener('click',()=>{MS.run=false;show('#s-start');renderCrew();});
-$('#g-knip').addEventListener('click',()=>{ac();$('#dex').scrollIntoView({behavior:RM?'auto':'smooth',block:'start'});});
+$('#m-quit').addEventListener('click',()=>{MS.run=false;renderCrew();toStart();});
+$('#g-knip').addEventListener('click',()=>{ac();openKnip();});
 $('#g-mem').addEventListener('click',()=>{ac();startMem();});
 function renderGames(){const a=fitCanvas($('#g-knip canvas'),160,110);a.clearRect(0,0,160,110);drawMonster(a,M[0],80,64,22,{lens:null,time:1.2,mood:'smile'});
  const b=fitCanvas($('#g-mem canvas'),160,110);b.clearRect(0,0,160,110);[[50,'schaar',-.12],[110,'fohn',.12]].forEach(([x,id,r])=>{b.save();b.translate(x,55);b.rotate(r);b.fillStyle='#fff';b.strokeStyle=NAVY;b.lineWidth=2.5;b.beginPath();b.roundRect(-30,-40,60,80,10);b.fill();b.stroke();b.restore();drawTool(b,id,x,55,22);});
@@ -879,42 +879,48 @@ const agesEl=$('#ages');
 for(let a=4;a<=12;a++){const b=document.createElement('button');b.type='button';b.className='age';b.dataset.a=a;b.textContent=a===12?'12+':a;b.setAttribute('aria-label',a===12?'12 jaar of ouder':a+' jaar');
  b.addEventListener('click',()=>{ac();tone(523+a*30,.12,'square',.05);setAge(a);updNext();setTimeout(()=>{if(STEPS[WI].k==='leeftijd'&&!$('#s-intro').hidden){WSUB=99;nextStep();}},450);});agesEl.append(b);}
 
-const STEPS=[
- {k:'welkom',who:'haarriet',say:['Hoi! Welkom bij Capaldi Kappers. Ik ben Haarriët.','Deze monsters hebben wild haar. Help jij ze weer netjes te worden?'],next:'Beginnen'},
+const GEN=[
+ {k:'welkom',who:'haarriet',say:['Hoi! Welkom bij Capaldi Kappers. Ik ben Haarriët.','Hier kun je knippen, memory spelen en kleuren. Ik leg je kort uit hoe het werkt.'],next:'Beginnen'},
  {k:'scherm',who:'haarriet',say:['Speel je op een telefoon of op een tablet? Tik erop.'],need:()=>!!DB.device},
  {k:'leeftijd',who:'haarriet',say:['Hoe oud ben je? Tik op je leeftijd.'],need:()=>!!GRP},
  {k:'kapper',who:'haarriet',say:()=>['Kies een kapper. Die helpt jou tijdens het spelen.',`Met sterren speel je nieuwe kappers vrij. Jij hebt ${totalStars()} van de ${MAXST()} sterren.`]},
+ {k:'spellen',who:()=>host(),say:['Je bent er klaar voor!','Kies nu wat je wilt spelen. Bij elk spel leg ik het nog even uit.'],next:'Naar de spellen'}];
+const KNIP=[
  {k:'tondeuse',who:()=>host(),say:['Level 1: houd je vinger op de baard en schuif de tondeuse eroverheen.']},
  {k:'schaar',who:()=>host(),say:['Level 2: veeg met je vinger door het haar om te knippen.']},
  {k:'streepjes',who:'petra',say:['Ik ben Petra, de jury. Knip tot aan het streepje.','Groen is goed. Rood is te kort.']},
  {k:'groei',who:()=>host(),say:['Goed nieuws: het haar groeit steeds weer aan!','Zie je "Groeit aan!"? Knip het nog een keer bij, dan pak je weer extra punten.']},
  {k:'goud',who:'lokkie',say:['Ik ben Lokkie! Zie je een gouden lok? Tik er snel op voor 50 extra punten!']},
  {k:'klaar',who:()=>host(),say:['Super, je weet alles!','Kies nu wie er bij Capaldi in de stoel mag.'],next:'Naar de monsters'}];
-let WSUB=0;
+let WSUB=0,STEPS=GEN;
 const parts=st=>{const v=typeof st.say==='function'?st.say():st.say;return Array.isArray(v)?v:[v];};
 function talk(){const st=STEPS[WI],p=parts(st),k=Math.min(WSUB,p.length-1);
  say('#say-start',val(st.who),p[k],'happy');const nm=$('#say-start b');if(p.length>1)nm.textContent+=`  ${'●'.repeat(k+1)}${'○'.repeat(p.length-k-1)}`;
  const sp=$('#say-start span');sp.style.animation='none';void sp.offsetHeight;sp.style.animation='';
  const last=k>=p.length-1;$('#w-next').textContent=last?(WSINGLE?'Klaar':(st.next||'Verder')):'Verder';
- $('#w-back').hidden=!WSINGLE&&WI===0&&k===0;}
+ $('#w-back').hidden=!WSINGLE&&WI===0&&k===0&&STEPS===GEN;}
 let WI=0,WSINGLE=false,demoRaf=0;
 const val=v=>typeof v==='function'?v():v;
-function goStep(i,single){WI=i;WSINGLE=!!single;const st=STEPS[i];
+function goStep(i,single,track){if(track)STEPS=track;else if(single)STEPS=GEN;WI=i;WSINGLE=!!single;const st=STEPS[i];
  document.querySelectorAll('.wstep').forEach(el=>{const on=el.dataset.k===st.k;el.hidden=!on;if(on){el.style.animation='none';void el.offsetHeight;el.style.animation='';}});
  if(st.k==='kapper')renderCrew();
  const d=$('#w-dots');d.hidden=WSINGLE;d.innerHTML=STEPS.map((_,j)=>`<i class="${j===i?'on':j<i?'done':''}"></i>`).join('');
- $('#w-skip').hidden=WSINGLE||i===STEPS.length-1;
+ $('#w-skip').hidden=WSINGLE||i===STEPS.length-1;$('#w-skip').textContent=STEPS===KNIP?'Uitleg overslaan':'Intro overslaan';
  WSUB=0;talk();updNext();show('#s-intro');startDemo();}
 function updNext(){const st=STEPS[WI],more=WSUB<parts(st).length-1;$('#w-next').disabled=!more&&!!(st.need&&!st.need());}
-function nextStep(){if($('#w-next').disabled)return;if(WSUB<parts(STEPS[WI]).length-1){WSUB++;talk();updNext();tone(587,.06,'triangle',.04);return;}if(WSINGLE||WI>=STEPS.length-1){if(!WSINGLE){DB.introSeen=true;persist();}toStart();return;}tone(660,.08,'square',.04);goStep(WI+1);}
-function prevStep(){if(WSUB>0){WSUB=Math.min(WSUB,parts(STEPS[WI]).length-1)-1;if(WSUB>=0){talk();updNext();return;}WSUB=0;}if(WSINGLE){toStart();return;}if(WI>0)goStep(WI-1);}
-function toStart(){stopDemo();if(!GRP){goStep(2,true);say('#say-start','haarriet','Hoe oud ben je? Tik op je leeftijd, dan kun je meteen spelen.','happy');return;}updateAgebar();renderDex();renderBoard();show('#s-start');}
+function nextStep(){if($('#w-next').disabled)return;if(WSUB<parts(STEPS[WI]).length-1){WSUB++;talk();updNext();tone(587,.06,'triangle',.04);return;}if(WSINGLE||WI>=STEPS.length-1){if(!WSINGLE){if(STEPS===KNIP)DB.knipSeen=true;else DB.introSeen=true;persist();}STEPS===KNIP&&!WSINGLE?toKnip():toStart();return;}tone(660,.08,'square',.04);goStep(WI+1);}
+function prevStep(){if(WSUB>0){WSUB=Math.min(WSUB,parts(STEPS[WI]).length-1)-1;if(WSUB>=0){talk();updNext();return;}WSUB=0;}if(WSINGLE){toStart();return;}if(WI>0)goStep(WI-1);else if(STEPS===KNIP)toStart();}
+function toStart(){stopDemo();if(!GRP){goStep(2,true);say('#say-start','haarriet','Hoe oud ben je? Tik op je leeftijd, dan kun je meteen spelen.','happy');return;}updateAgebar();renderDex();renderBoard();renderGames();showView('home');show('#s-start');}
+function showView(v){$('#home-area').hidden=v!=='home';$('#knip-area').hidden=v!=='knip';}
+function toKnip(){stopDemo();updateAgebar();renderDex();showView('knip');show('#s-start');say('#say-knip',host(),'Kies een monster. Wie mag er als eerste in de stoel?','happy');}
+function openKnip(){if(!GRP){toStart();return;}if(!DB.knipSeen)goStep(0,false,KNIP);else toKnip();}
 $('#w-next').addEventListener('click',nextStep);
 $('#w-back').addEventListener('click',prevStep);
-$('#w-skip').addEventListener('click',()=>{ac();if(!DB.device)setDevice(matchMedia('(max-width:600px)').matches?'phone':'tablet');DB.introSeen=true;persist();toStart();});
+$('#w-skip').addEventListener('click',()=>{ac();if(STEPS===KNIP){DB.knipSeen=true;persist();toKnip();return;}if(!DB.device)setDevice(matchMedia('(max-width:600px)').matches?'phone':'tablet');DB.introSeen=true;persist();toStart();});
 $('#a-change').addEventListener('click',()=>goStep(2,true));
 $('#c-change').addEventListener('click',()=>goStep(3,true));
-$('#w-again').addEventListener('click',()=>goStep(4,false));
+$('#w-again').addEventListener('click',()=>goStep(0,false,KNIP));
+$('#k-home').addEventListener('click',()=>{ac();toStart();});
 
 /* uitleg-animaties */
 function startDemo(){stopDemo();const cvd=document.querySelector(`.wstep[data-k="${STEPS[WI].k}"] canvas.demo`);if(!cvd)return;
