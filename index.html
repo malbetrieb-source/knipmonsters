@@ -95,6 +95,11 @@
     <div style="display:flex;flex-direction:column;gap:22px">
       <div class="agebar"><span>Je bent <b id="a-age"></b> · <span id="a-lvl"></span> · Jouw kapper: <b id="a-crew"></b></span>
         <div class="row"><button id="a-change" class="ghost" type="button">Andere leeftijd</button><button id="c-change" class="ghost" type="button">Andere kapper</button><button id="w-again" class="ghost" type="button">Uitleg</button></div></div>
+      <h2 class="h2">Wat wil je spelen?</h2>
+      <div class="games">
+        <button class="game" id="g-knip" type="button"><canvas aria-hidden="true"></canvas><span><b>Knipmonsters</b><small>Trim en knip wilde monsters</small></span></button>
+        <button class="game" id="g-mem" type="button"><canvas aria-hidden="true"></canvas><span><b>Kappersmemory</b><small>Zoek de paren en leer de spullen van de kapper kennen</small><span class="mstars" id="g-mem-stars"></span></span></button>
+      </div>
       <h2 class="h2">Wie mag er bij Capaldi in de stoel?</h2>
       <div id="dex" class="dex"></div>
       <div class="two">
@@ -108,6 +113,8 @@
             <li><b>Pas op:</b> sommige monsters kunnen niet stilzitten! Wacht tot ze even stoppen.</li>
             <li><b>Gouden lok?</b> Tik hem snel aan, dan vangt Lokkie hem voor 50 bonuspunten.</li>
             <li><b>Sterren verdienen</b> speelt nieuwe kappers vrij. Kies ze via "Andere kapper".</li>
+            <li><b>Level 3:</b> Föhnaldo, Knip Kardashian, Professor Gelda en Wilma Wortelwax hebben elk een eigen level na het knippen.</li>
+            <li><b>Kappersmemory:</b> zoek de paren en leer de spullen van de kapper kennen. Ook daar verdien je sterren.</li>
             <li>Alles netjes binnen de tijd? Dan krijg je 3 sterren!</li>
           </ol>
         </div>
@@ -143,7 +150,7 @@
         <h2 id="e-title"></h2>
         <div id="e-stars" class="stars"></div>
         <p class="big"><span id="e-score">0</span> punten</p>
-        <div class="split"><span id="e-l1"></span><span id="e-l2"></span></div>
+        <div class="split"><span id="e-l1"></span><span id="e-l2"></span><span id="e-l3" hidden></span></div>
         <div class="say" id="say-end"><canvas width="136" height="136" aria-hidden="true"></canvas><p class="bubble"><b></b><span></span></p></div>
         <form id="save">
           <label for="nick">Jouw kappersnaam</label>
@@ -163,6 +170,31 @@
       </div>
     </div>
   </section>
+
+  <section id="s-mem" hidden>
+    <div class="memwrap">
+      <div class="hud memhud">
+        <div class="who"><span class="lvl">Kappersmemory</span></div>
+        <div class="stat"><small>Paren</small><b id="m-pairs">0/0</b></div>
+        <div class="stat"><small>Beurten</small><b id="m-moves">0</b></div>
+        <button id="m-quit" class="ghost" type="button">Stoppen</button>
+      </div>
+      <div class="say" id="say-mem"><canvas width="136" height="136" aria-hidden="true"></canvas><p class="bubble" aria-live="polite"><b></b><span></span></p></div>
+      <div id="mgrid" class="mgrid"></div>
+    </div>
+  </section>
+
+  <div id="meet" class="meet" hidden role="dialog" aria-modal="true" aria-labelledby="meet-name">
+    <div class="meet-card">
+      <p class="eyebrow" id="meet-eyebrow"></p>
+      <canvas id="meet-cv" aria-hidden="true"></canvas>
+      <h2 id="meet-name"></h2>
+      <p class="meet-role" id="meet-role"></p>
+      <div class="say" id="say-meet"><canvas width="136" height="136" aria-hidden="true"></canvas><p class="bubble" aria-live="polite"><b></b><span></span></p></div>
+      <div class="meet-facts"><span id="meet-perk"></span><span id="meet-l3"></span></div>
+      <div class="row meet-btns"><button class="btn" id="meet-pick" type="button">Kies als mijn kapper</button><button class="ghost" id="meet-close" type="button">Later</button></div>
+    </div>
+  </div>
 
   <footer>Een spel van <img class="flogo" src="assets/capaldi-logo.png" alt="Capaldi Kappers"> · bij ons is de kapper een feestje</footer>
 </div>

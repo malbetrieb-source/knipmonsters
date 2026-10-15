@@ -4,6 +4,15 @@ Kinderspel van Capaldi Kappers. Kinderen trimmen eerst de baard van een wild mon
 
 Doel: de kapper minder spannend maken voor kinderen, en met een klassement prijzen weggeven in de salon.
 
+## Spellen
+- **Knipmonsters** – level 1 tondeuse, level 2 schaar. Föhnaldo, Knip Kardashian, Professor Gelda en Wilma Wortelwax hebben elk een eigen level 3 (föhnen, fotomoment, gel-formule, waxen).
+- **Kappersmemory** – paren zoeken met de spullen van de kapper; bij elk paar legt de kapper uit wat het is.
+
+Nieuwe kappers spelen zich vrij met sterren (max. 15: 12 uit Knipmonsters, 3 uit memory) en stellen zich dan voor.
+
+## Testen
+`index.html?test` zet een testhaakje (`window.__KM`) aan voor automatisch testen.
+
 ## Spelen
 Open `index.html` in een browser, of via GitHub Pages.
 

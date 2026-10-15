@@ -237,3 +237,49 @@ body.phone .stat b{font-size:18px}
 body.phone .stat small{font-size:9px}
 body.phone .lvl{font-size:11px;padding:2px 9px}
 @media (prefers-reduced-motion:reduce){.card,.btn,.dev{transition:none}}
+
+/* spelkeuze */
+.games{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.game{display:flex;align-items:center;gap:14px;text-align:left;padding:12px 16px;background:#fff;color:var(--navy);border:3px solid var(--navy);border-radius:20px;box-shadow:0 5px 0 var(--navy)}
+.game:hover{transform:translateY(-3px)}
+.game:active{transform:translateY(3px);box-shadow:0 2px 0 var(--navy)}
+.game canvas{flex:none;width:120px;height:auto;aspect-ratio:160/110;border-radius:14px;background:#d4f2ff;border:2.5px solid var(--navy)}
+.game>span{display:flex;flex-direction:column;gap:4px;min-width:0}
+.game b{font-family:var(--f-game);font-weight:400;font-size:19px}
+.game small{font-size:14px;color:var(--muted)}
+.mstars{flex-direction:row!important;font-size:18px;color:#d3d8e8;letter-spacing:2px}
+.mstars .on{color:var(--sun);-webkit-text-stroke:1px var(--navy)}
+#g-mem canvas{background:#ffe3f0}
+
+/* memory */
+.memwrap{display:flex;flex-direction:column;gap:12px;max-width:720px;margin:0 auto;width:100%}
+.memhud{grid-template-columns:1fr auto auto auto}
+.mgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.mgrid[data-n="10"]{grid-template-columns:repeat(5,minmax(0,1fr))}
+.mcard{position:relative;aspect-ratio:3/4;perspective:900px;border:0;background:none;padding:0;cursor:pointer}
+.mcard .in{position:absolute;inset:0;display:block;transition:transform .45s;transform-style:preserve-3d}
+.mcard.open .in{transform:rotateY(180deg)}
+.mcard .f,.mcard .b{position:absolute;inset:0;-webkit-backface-visibility:hidden;backface-visibility:hidden;border:3px solid var(--navy);border-radius:16px;box-shadow:0 4px 0 var(--navy);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;overflow:hidden}
+.mcard .b{background:repeating-linear-gradient(45deg,#ffe3f0 0 10px,#ffd0e5 10px 20px)}
+.mcard .b svg{width:52%;height:auto;filter:drop-shadow(0 3px 0 var(--navy));border-radius:50%}
+.mcard .f{background:#fff;transform:rotateY(180deg)}
+.mcard .f canvas{width:84%;height:auto;aspect-ratio:1}
+.mcard .f small{font-weight:700;font-size:clamp(10px,2.3vw,14px);padding-inline:4px;text-align:center;line-height:1.15}
+.mcard.done .f{background:#eafff1;border-color:#2fb36b;box-shadow:0 4px 0 #2fb36b}
+.mcard:not(.open):hover .in{transform:translateY(-3px)}
+@media (max-width:640px){.mgrid[data-n="10"]{grid-template-columns:repeat(4,minmax(0,1fr))}.mgrid{gap:7px}.memhud{grid-template-columns:1fr auto auto auto}}
+
+/* level 3 + kennismaken */
+.mate .l3tag{background:#fff2c2}
+.meetbtn{margin-top:4px;background:none;border:0;color:var(--grape);font-weight:700;font-size:13px;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.meet{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:16px;background:rgba(29,43,79,.55);overflow-y:auto}
+.meet-card{position:relative;width:min(460px,100%);display:flex;flex-direction:column;align-items:center;gap:10px;padding:18px 18px 20px;background:#fff;border:3px solid var(--navy);border-radius:26px;box-shadow:0 8px 0 var(--navy);text-align:center;animation:stepIn .35s ease-out}
+#meet-cv{width:100%;max-width:300px;height:auto;aspect-ratio:300/240;border-radius:20px;background:#eaf6ff}
+.meet-card h2{margin:0;font-family:var(--f-game);font-weight:400;font-size:28px;line-height:1.1}
+.meet-role{margin:0;color:var(--muted)}
+.meet-card .say{width:100%;text-align:left}
+.meet-facts{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.meet-facts span{padding:4px 12px;border-radius:999px;background:var(--soft);font-weight:700;font-size:13px;color:var(--grape)}
+.meet-facts span#meet-l3{background:#fff2c2;color:var(--navy)}
+.meet-btns{justify-content:center}
+@media (prefers-reduced-motion:reduce){.mcard .in{transition:none}.meet-card{animation:none}}
