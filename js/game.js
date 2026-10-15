@@ -730,7 +730,7 @@ function loadArt(){try{return JSON.parse(localStorage.getItem(ARTKEY)||'[]');}ca
 function saveArt(a){try{localStorage.setItem(ARTKEY,JSON.stringify(a));return true;}catch(e){return false;}}
 const IMGS={};
 function loadImg(src){return IMGS[src]||(IMGS[src]=new Promise((ok,no)=>{const im=new Image();im.onload=()=>ok(im);im.onerror=no;im.src=src;}));}
-function drawImgPlate(c,im){c.fillStyle='#fff';c.fillRect(0,0,CP,CP);const s=Math.min(CP/im.width,CP/im.height)*.98,w=im.width*s,h=im.height*s;c.imageSmoothingQuality='high';c.drawImage(im,(CP-w)/2,(CP-h)/2,w,h);c.strokeStyle='#000';c.lineWidth=3;c.strokeRect((CP-w)/2+1,(CP-h)/2+1,w-2,h-2);}
+function drawImgPlate(c,im){c.fillStyle='#fff';c.fillRect(0,0,CP,CP);const s=Math.min(CP/im.width,CP/im.height)*.98,w=im.width*s,h=im.height*s;c.imageSmoothingQuality='high';c.drawImage(im,(CP-w)/2,(CP-h)/2,w,h);}
 function buildPlate(p){
  const src=document.createElement('canvas');src.width=src.height=CP;const sc=src.getContext('2d');if(p.img)drawImgPlate(sc,p._im);else p.draw(sc);
  const d=sc.getImageData(0,0,CP,CP).data,N=CP*CP,mask=new Uint8Array(N);
