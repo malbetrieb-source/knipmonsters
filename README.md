@@ -12,6 +12,15 @@ Doel: de kapper minder spannend maken voor kinderen, en met een klassement prijz
 
 Nieuwe kappers spelen zich vrij met sterren (max. 18: 12 uit Knipmonsters, 3 uit memory, 3 uit de tondeuse-tank) en stellen zich dan voor.
 
+## Salonmodus (tablets in de wachthoek)
+Open één keer `…/knipmonsters/?salon` op de tablet (en zet hem op het beginscherm). Dan:
+- altijd tabletweergave, instellingenknoppen verborgen;
+- na 90 seconden niets doen terug naar het begin (met 10 s waarschuwing), leeftijd wordt gewist;
+- Top 5 toont alleen scores van vandaag;
+- personeelsmenu: Capaldi-logo linksboven 2 seconden ingedrukt houden (geluid, stem, Top 5 leegmaken, salonmodus uit);
+- werkt ook offline (service worker).
+Salonmodus uitzetten kan via het personeelsmenu of met `?thuis`.
+
 ## Testen
 `index.html?test` zet een testhaakje (`window.__KM`) aan voor automatisch testen.
 

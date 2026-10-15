@@ -313,8 +313,8 @@ function renderDex(){const el=$('#dex');el.textContent='';
   el.append(b);preview(cv,m,240,220,best>0,!open);
  });}
 function renderBoard(){const el=$('#board');el.textContent='';
- const g=GRP?GRP.id:3;$('#b-grp').textContent=GRP?'· '+GRP.label:'';const top=[...DB.scores].filter(s=>(s.g??3)===g).sort((a,b)=>b.score-a.score).slice(0,5);
- if(!top.length){const li=document.createElement('li');li.className='empty';li.textContent='Nog geen scores in deze leeftijdsgroep. Wie wordt de eerste topkapper?';el.append(li);return;}
+ const g=GRP?GRP.id:3,day=DB.salon&&DB.boardDay!==false,today=new Date().toDateString();$('#b-grp').textContent=(day?'· vandaag ':'')+(GRP?'· '+GRP.label:'');const top=[...DB.scores].filter(s=>(s.g??3)===g&&(!day||new Date(s.d).toDateString()===today)).sort((a,b)=>b.score-a.score).slice(0,5);
+ if(!top.length){const li=document.createElement('li');li.className='empty';li.textContent=(DB.salon&&DB.boardDay!==false?'Vandaag nog geen scores':'Nog geen scores')+' in deze leeftijdsgroep. Wie wordt de eerste topkapper?';el.append(li);return;}
  top.forEach(s=>{const li=document.createElement('li');const nm=document.createElement('span');nm.className='nm';nm.textContent=s.nick;
   const sm=document.createElement('small');sm.textContent=s.monster+' · '+'★'.repeat(s.stars||0);nm.append(sm);
   const sc=document.createElement('span');sc.className='sc';sc.textContent=s.score;li.append(nm,sc);el.append(li);});}
@@ -1194,6 +1194,45 @@ if(DB.device)setDevice(DB.device);
 if(DB.device)setDevice(DB.device);
 renderDex();renderBoard();renderCrew();renderGames();toStart();
 $('#home-logo').addEventListener('click',()=>{ac();S.run=false;MS.run=false;TK.run=false;humOff();AFTER=null;if(!$('#meet').hidden)closeMeet();meetQ=[];try{speechSynthesis.cancel();}catch(e){}toStart();});
-if(/[?&]test\b/.test(location.search))window.__KM={TK,startTank,tLevelDone,S,MS,M,CK,PLATES,openPlate,startColor,fillAt,start,begin3,frame3,finish,startMem,openMeet,setAge,toStart,get GRP(){return GRP;}};
+/* salonmodus: tablets in de wachthoek */
+{const q=new URLSearchParams(location.search);if(q.has('salon')){DB.salon=true;persist();}if(q.has('thuis')){DB.salon=false;persist();}}
+const SALON=()=>!!DB.salon;
+const IDLE=90;let idleT=0,idleWarn=false,lpTimer=0,lpDone=false;
+function applySalon(){document.body.classList.toggle('salon',SALON());const mf=document.querySelector('link[rel="manifest"]');if(mf)mf.href=SALON()?'manifest-salon.webmanifest':'manifest.webmanifest';
+ if(SALON()){if(DB.device!=='tablet')setDevice('tablet');}renderBoard();}
+function goHomeReset(){S.run=false;MS.run=false;TK.run=false;humOff();AFTER=null;if(!$('#meet').hidden)closeMeet();meetQ=[];try{speechSynthesis.cancel();}catch(e){}
+ if(!$('#staff').hidden)$('#staff').hidden=true;$('#idle').hidden=true;GRP=null;AGE=null;document.querySelectorAll('.age.sel').forEach(b=>b.classList.remove('sel'));
+ const nk=$('#nick');if(nk)nk.value='';toStart();}
+function poke(){idleT=0;if(idleWarn){idleWarn=false;$('#idle').hidden=true;}}
+['pointerdown','keydown','touchstart'].forEach(ev=>addEventListener(ev,poke,{passive:true,capture:true}));
+setInterval(()=>{if(!SALON())return;const atHome=!$('#s-start').hidden&&!$('#home-area').hidden&&!GRP;if(atHome){idleT=0;return;}
+ idleT+=1;if(idleT>=IDLE-10&&!idleWarn){idleWarn=true;$('#idle').hidden=false;}
+ if(idleWarn)$('#idle-sec').textContent=Math.max(0,IDLE-idleT);
+ if(idleT>=IDLE){idleT=0;idleWarn=false;goHomeReset();}},1000);
+$('#idle-stay').addEventListener('click',()=>{poke();});
+/* personeelsmenu: logo 2 seconden ingedrukt houden */
+{const lg=$('#home-logo');
+ lg.addEventListener('pointerdown',()=>{lpDone=false;clearTimeout(lpTimer);lpTimer=setTimeout(()=>{lpDone=true;openStaff();},2000);});
+ ['pointerup','pointerleave','pointercancel'].forEach(ev=>lg.addEventListener(ev,()=>clearTimeout(lpTimer)));
+ lg.addEventListener('contextmenu',e=>e.preventDefault());
+ lg.addEventListener('click',e=>{if(lpDone){e.stopImmediatePropagation();e.preventDefault();lpDone=false;}},true);}
+function openStaff(){tone(523,.08,'triangle',.05);updStaff();$('#staff').hidden=false;$('#st-clear').dataset.arm='';$('#st-clear').textContent='Top 5 leegmaken';}
+function updStaff(){$('#st-salon').textContent='Salonmodus: '+(SALON()?'aan':'uit');$('#st-sound').textContent='Geluid: '+(muted?'uit':'aan');$('#st-voice').textContent='Stem: '+(voiceOn?'aan':'uit');
+ $('#st-board').textContent='Top 5: '+(DB.boardDay===false?'alle scores':'alleen vandaag');}
+$('#st-close').addEventListener('click',()=>{$('#staff').hidden=true;});
+$('#st-sound').addEventListener('click',()=>{$('#mute').click();updStaff();});
+$('#st-voice').addEventListener('click',()=>{setVoice(!voiceOn);updStaff();});
+$('#st-salon').addEventListener('click',()=>{DB.salon=!SALON();persist();applySalon();updStaff();});
+$('#st-board').addEventListener('click',()=>{DB.boardDay=DB.boardDay===false;persist();renderBoard();updStaff();});
+$('#st-clear').addEventListener('click',e=>{const b=e.currentTarget;if(!b.dataset.arm){b.dataset.arm='1';b.textContent='Zeker weten? Tik nog een keer';return;}
+ DB.scores=[];persist();renderBoard();b.dataset.arm='';b.textContent='Top 5 is leeg';});
+$('#st-reset').addEventListener('click',()=>{goHomeReset();});
+$('#st-reload').addEventListener('click',()=>{location.reload();});
+$('#staff').addEventListener('click',e=>{if(e.target.id==='staff')$('#staff').hidden=true;});
+/* offline */
+if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)){addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});}
+applySalon();
+
+if(/[?&]test\b/.test(location.search))window.__KM={setIdle:n=>{idleT=n;},TK,startTank,tLevelDone,S,MS,M,CK,PLATES,openPlate,startColor,fillAt,start,begin3,frame3,finish,startMem,openMeet,setAge,toStart,get GRP(){return GRP;}};
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{renderDex();renderCrew();renderGames();});
 })();

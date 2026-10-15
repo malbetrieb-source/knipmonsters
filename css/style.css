@@ -13,8 +13,7 @@ img{max-width:100%}
   color-scheme:light;
 }
 html,body{background:var(--bg);color:var(--navy)}
-body{font-family:var(--f-body);font-size:16px;line-height:1.5;
-  background-image:radial-gradient(circle at 12% 18%,rgba(255,95,162,.14) 0 60px,transparent 61px),radial-gradient(circle at 88% 8%,rgba(255,201,40,.22) 0 80px,transparent 81px),radial-gradient(circle at 92% 70%,rgba(34,195,195,.14) 0 90px,transparent 91px),radial-gradient(circle at 4% 82%,rgba(138,92,246,.12) 0 70px,transparent 71px);background-attachment:fixed}
+body{font-family:var(--f-body);font-size:16px;line-height:1.5;}
 *{box-sizing:border-box}
 .wrap{max-width:1000px;margin:0 auto;padding-inline:16px;padding-block:16px 40px;display:flex;flex-direction:column;gap:28px}
 button{font:inherit;cursor:pointer}
@@ -336,3 +335,31 @@ footer p{margin:0}
 .brand .bword.rf{height:.74em}
 .credit{font-size:9px;color:var(--muted);margin-top:22px!important;opacity:.85}
 .credit .bico{opacity:.85}
+
+/* salonmodus */
+body.salon #devbtn,body.salon #voicebtn,body.salon #mute,body.salon #c-save,body.salon #c-print,body.salon #c-print-empty{display:none!important}
+body.salon{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;overscroll-behavior:none}
+body.salon input{-webkit-user-select:text;user-select:text}
+.idle{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:16px;background:rgba(29,43,79,.55)}
+.idle-card{display:flex;flex-direction:column;align-items:center;gap:12px;padding:24px 28px;background:#fff;border:3px solid var(--navy);border-radius:24px;box-shadow:0 8px 0 var(--navy);text-align:center;animation:stepIn .3s ease-out}
+.idle-card h2{margin:0;font-family:var(--f-game);font-weight:400;font-size:28px}
+.idle-card p{margin:0;font-size:18px}
+.staff-card{width:min(520px,100%)}
+.staff-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;width:100%}
+.staff-grid .ghost{padding:12px 10px;font-size:15px}
+
+/* zwevende bollen op de achtergrond */
+.orbs{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.orbs i{position:absolute;display:block;border-radius:50%;will-change:transform}
+.orbs i:nth-child(1){width:120px;height:120px;left:6%;top:12%;background:rgba(255,95,162,.14);animation:float1 26s ease-in-out infinite}
+.orbs i:nth-child(2){width:160px;height:160px;left:80%;top:2%;background:rgba(255,201,40,.22);animation:float2 32s ease-in-out infinite}
+.orbs i:nth-child(3){width:180px;height:180px;left:84%;top:62%;background:rgba(34,195,195,.14);animation:float3 29s ease-in-out infinite}
+.orbs i:nth-child(4){width:140px;height:140px;left:-2%;top:74%;background:rgba(138,92,246,.12);animation:float4 35s ease-in-out infinite}
+.orbs i:nth-child(5){width:70px;height:70px;left:46%;top:40%;background:rgba(255,138,61,.12);animation:float2 40s ease-in-out infinite reverse}
+.orbs i:nth-child(6){width:90px;height:90px;left:30%;top:86%;background:rgba(138,217,74,.13);animation:float1 38s ease-in-out infinite reverse}
+@keyframes float1{0%,100%{transform:translate(0,0)}25%{transform:translate(9vw,6vh)}50%{transform:translate(4vw,14vh)}75%{transform:translate(-3vw,5vh)}}
+@keyframes float2{0%,100%{transform:translate(0,0)}25%{transform:translate(-8vw,8vh)}50%{transform:translate(-14vw,3vh)}75%{transform:translate(-5vw,-4vh)}}
+@keyframes float3{0%,100%{transform:translate(0,0)}33%{transform:translate(-10vw,-9vh)}66%{transform:translate(-4vw,-16vh)}}
+@keyframes float4{0%,100%{transform:translate(0,0)}30%{transform:translate(8vw,-10vh)}60%{transform:translate(15vw,-4vh)}}
+@media (prefers-reduced-motion:reduce){.orbs i{animation:none}}
+.wrap{position:relative;z-index:1}

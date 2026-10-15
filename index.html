@@ -8,10 +8,16 @@
 <meta name="author" content="De Robotfabriek">
 <meta name="theme-color" content="#eaf6ff">
 <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="assets/icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Capaldi Kids">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Bodoni+Moda:ital,wght@0,700;1,500&family=Rubik:wght@400;500;700&display=swap">
-<link rel="stylesheet" href="css/style.css?v=20261015175801">
+<link rel="stylesheet" href="css/style.css?v=20261015180448">
 </head>
 <body>
+<div class="orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
 <div class="wrap">
   <header class="top">
     <button class="glogo" id="home-logo" type="button" aria-label="Capaldi Kappers, naar het begin"><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="44" fill="#fff" stroke="#1d2b4f" stroke-width="5"/><circle cx="50" cy="50" r="33" fill="none" stroke="#d4b07a" stroke-width="3.5" stroke-dasharray="196 11" transform="rotate(95.5 50 50)"/><text x="50" y="53" text-anchor="middle" dominant-baseline="middle" font-family="'Bodoni Moda', Didot, Georgia, serif" font-weight="700" font-size="46" fill="#d4b07a">C</text></svg><span class="gl-t"><b>CAPALDI</b><small>KAPPERS</small></span></button>
@@ -257,6 +263,28 @@
     </div>
   </section>
 
+  <div id="idle" class="idle" hidden role="alertdialog" aria-labelledby="idle-t">
+    <div class="idle-card"><h2 id="idle-t">Ben je er nog?</h2><p>Over <b id="idle-sec">10</b> seconden gaan we terug naar het begin.</p><button class="btn" id="idle-stay" type="button">Ik speel nog!</button></div>
+  </div>
+
+  <div id="staff" class="meet" hidden role="dialog" aria-modal="true" aria-labelledby="staff-t">
+    <div class="meet-card staff-card">
+      <p class="eyebrow">Alleen voor het Capaldi-team</p>
+      <h2 id="staff-t">Instellingen</h2>
+      <div class="staff-grid">
+        <button class="ghost" id="st-salon" type="button"></button>
+        <button class="ghost" id="st-sound" type="button"></button>
+        <button class="ghost" id="st-voice" type="button"></button>
+        <button class="ghost" id="st-board" type="button"></button>
+        <button class="ghost" id="st-clear" type="button">Top 5 leegmaken</button>
+        <button class="ghost" id="st-reset" type="button">Terug naar begin</button>
+        <button class="ghost" id="st-reload" type="button">Spel vernieuwen</button>
+      </div>
+      <p class="note" style="margin:0">Open dit menu door het Capaldi-logo linksboven 2 seconden ingedrukt te houden.</p>
+      <button class="btn" id="st-close" type="button">Sluiten</button>
+    </div>
+  </div>
+
   <div id="print-area" aria-hidden="true"></div>
 
   <div id="meet" class="meet" hidden role="dialog" aria-modal="true" aria-labelledby="meet-name">
@@ -276,6 +304,6 @@
     <p class="credit">Ontwikkeld door <span class="brand"><img class="bico" src="assets/robotfabriek-robot.png" alt="" width="58" height="64"><img class="bword rf" src="assets/robotfabriek-woord.png" alt="De Robotfabriek" width="494" height="48"></span></p>
   </footer>
 </div>
-<script src="js/game.js?v=20261015175801"></script>
+<script src="js/game.js?v=20261015180448"></script>
 </body>
 </html>
