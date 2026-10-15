@@ -1305,7 +1305,7 @@ if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)){addEventLi
 applySalon();
 
 /* scores bewaren: maandoverzicht en Google Sheet */
-const SCORE_URL='';
+const SCORE_URL='https://script.google.com/macros/s/AKfycbxZkfmWzEx9l2OngTej3KKtV5RXRcube7GNvK9QcvrXDUw_t0Nuer_Ffr4LVCcHC_XQ/exec';
 const QKEY='capaldi-score-queue';
 const sheetUrl=()=>DB.scoreUrl||SCORE_URL;
 function qLoad(){try{return JSON.parse(localStorage.getItem(QKEY)||'[]');}catch(e){return[];}}
