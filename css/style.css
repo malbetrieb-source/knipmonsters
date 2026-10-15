@@ -266,6 +266,7 @@ body.phone #s-tank .tgoal{display:none}
 .memhud{grid-template-columns:1fr auto auto auto}
 .mgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
 .mgrid[data-n="10"]{grid-template-columns:repeat(5,minmax(0,1fr))}
+.mgrid[data-n="11"]{grid-template-columns:repeat(6,minmax(0,1fr))}
 .mcard{position:relative;aspect-ratio:3/4;perspective:900px;border:0;background:none;padding:0;cursor:pointer}
 .mcard .in{position:absolute;inset:0;display:block;transition:transform .45s;transform-style:preserve-3d}
 .mcard.open .in{transform:rotateY(180deg)}
@@ -277,7 +278,7 @@ body.phone #s-tank .tgoal{display:none}
 .mcard .f small{font-weight:700;font-size:clamp(10px,2.3vw,14px);padding-inline:4px;text-align:center;line-height:1.15}
 .mcard.done .f{background:#eafff1;border-color:#2fb36b;box-shadow:0 4px 0 #2fb36b}
 .mcard:not(.open):hover .in{transform:translateY(-3px)}
-@media (max-width:640px){.mgrid[data-n="10"]{grid-template-columns:repeat(4,minmax(0,1fr))}.mgrid{gap:7px}.memhud{grid-template-columns:1fr auto auto auto}}
+@media (max-width:640px){.mgrid[data-n="10"],.mgrid[data-n="11"]{grid-template-columns:repeat(4,minmax(0,1fr))}.mgrid{gap:7px}.memhud{grid-template-columns:1fr auto auto auto}}
 
 /* level 3 + kennismaken */
 .mate .l3tag{background:#fff2c2}
@@ -366,3 +367,11 @@ body.salon input{-webkit-user-select:text;user-select:text}
 
 .plate .ptag{font-size:11px;font-weight:700;color:#8a6a3a;background:#fff2c2;border-radius:999px;padding:2px 8px}
 .plate.award{border-color:#c9a063;box-shadow:0 5px 0 #c9a063}
+
+.ages .age-pro{grid-column:span 2;aspect-ratio:auto;font-size:20px;letter-spacing:.04em;color:#fff;background:linear-gradient(135deg,#1d2b4f,#3b2a6b)!important;border-color:#1d2b4f;box-shadow:0 5px 0 #c9a063;position:relative;overflow:hidden}
+.ages .age-pro::after{content:"";position:absolute;inset:-40%;background:linear-gradient(115deg,transparent 40%,rgba(255,255,255,.35) 50%,transparent 60%);animation:shine 3.2s ease-in-out infinite}
+.ages .age-pro[data-a="14"]{background:linear-gradient(135deg,#7a1f2d,#c9a063)!important;box-shadow:0 5px 0 #1d2b4f}
+.ages .age-pro.sel{outline:4px solid var(--pink);outline-offset:3px}
+@keyframes shine{0%,60%{transform:translateX(-60%)}100%{transform:translateX(60%)}}
+@media (prefers-reduced-motion:reduce){.ages .age-pro::after{animation:none}}
+body.promode .agebar{background:linear-gradient(90deg,#fff,#fff2c2)}

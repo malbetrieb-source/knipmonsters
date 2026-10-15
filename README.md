@@ -12,6 +12,9 @@ Doel: de kapper minder spannend maken voor kinderen, en met een klassement prijz
 
 Nieuwe kappers spelen zich vrij met sterren (max. 18: 12 uit Knipmonsters, 3 uit memory, 3 uit de tondeuse-tank) en stellen zich dan voor.
 
+## Moeilijkheid
+Leeftijd 4–12+ plus twee extra standen: **EXPERT** (normaal tempo, minder tijd, wildere monsters) en **PRO** (nog sneller, haar groeit harder, kleinere marge, 11 memoryparen, 7 lange gel-reeks). Elke stand heeft een eigen Top 5.
+
 ## Salonmodus (tablets in de wachthoek)
 Open één keer `…/knipmonsters/?salon` op de tablet (en zet hem op het beginscherm). Dan:
 - altijd tabletweergave, instellingenknoppen verborgen;

@@ -8,14 +8,18 @@ const GROUPS=[
  {id:0,from:4,to:5,label:'4 en 5 jaar',desc:'Alle monsters staan stil',time:1.6,grow:.4,tol:.1,win:.8},
  {id:1,from:6,to:8,label:'6 t/m 8 jaar',desc:'Monsters bewegen een beetje',time:1.4,grow:.55,tol:.09,win:.85},
  {id:2,from:9,to:10,label:'9 en 10 jaar',desc:'Monsters bewegen flink',time:1.25,grow:.65,tol:.08,win:.85},
- {id:3,from:11,to:99,label:'11 jaar en ouder',desc:'Monsters bewegen wild',time:1.15,grow:.75,tol:.075,win:.88}];
+ {id:3,from:11,to:12,label:'11 jaar en ouder',desc:'Monsters bewegen wild',time:1.15,grow:.75,tol:.075,win:.88},
+ {id:4,from:13,to:13,label:'EXPERT',desc:'Expert-modus: sneller, wilder, minder tijd',time:1,grow:1,tol:.065,win:.9,pro:1},
+ {id:5,from:14,to:14,label:'PRO',desc:'Pro-modus: alleen voor de echte toppers',time:.85,grow:1.25,tol:.055,win:.92,pro:2}];
 let AGE=null,GRP=null;
 function eff(m){const g=GRP?GRP.id:3;
+ if(g===5)return !m.move?{move:1,amp:.9,fq:1.1}:m.move===1?{move:2,speed:.38,pause:1.2}:{move:2,speed:m.speed*1.25,pause:Math.max(.6,m.pause*.7)};
+ if(g===4)return !m.move?{move:1,amp:.6,fq:.8}:m.move===1?{move:1,amp:1,fq:1.2}:{move:2,speed:m.speed,pause:m.pause};
  if(g===0||!m.move)return{move:0};
  if(g===1)return{move:1,amp:.45,fq:.6};
  if(g===2)return m.move===1?{move:1,amp:.75,fq:.8}:{move:2,speed:m.speed*.55,pause:m.pause+1};
  return m.move===1?{move:1,amp:.9,fq:.9}:{move:2,speed:m.speed*.8,pause:m.pause+.4};}
-const moveLabel=m=>{const e=eff(m);return e.move===0?'Staat stil':e.move===1?(e.amp<.6?'Wiebelt een beetje':'Beweegt langzaam'):(GRP&&GRP.id===2?'Stuitert rond':'Stuitert wild rond');};
+const moveLabel=m=>{const e=eff(m);return e.move===0?'Staat stil':e.move===1?(e.amp<.6?'Wiebelt een beetje':'Beweegt langzaam'):(GRP&&GRP.id===2?'Stuitert rond':GRP&&GRP.id>=4?'Stuitert razendsnel':'Stuitert wild rond');};
 
 const M=[
  {id:'vlamkop',no:'001',name:'Vlamkop',type:'Vuur',tc:'#ff8a3d',body:'#ff9248',belly:'#ffe0bf',ear:'#ff6b6b',hair:['#ffd23f','#ff9f1c','#ff5fa2'],
@@ -554,7 +558,7 @@ function begin3(){const k=host(),D3=L3[k];S.lvl=3;S.ptr.down=false;humOff();
  const n=S.m.n;
  if(k==='fohnaldo')S.wet=Array(n).fill(1);
  if(k==='wilma'){S.waxed=Array(n).fill(false);S.waxA=Array(n).fill(0);}
- if(k==='gelda'){const r=GRP.id===0?[2,3,3]:GRP.id===1?[2,3,4]:[3,4,5];S.gel={rounds:r,round:0,seq:[],phase:'show',pt:-1,inp:0,lit:-1,tap:-1,tapT:0,said:false};newSeq();}
+ if(k==='gelda'){const r=GRP.id===0?[2,3,3]:GRP.id===1?[2,3,4]:GRP.id===4?[4,5,6]:GRP.id===5?[5,6,7]:[3,4,5];S.gel={rounds:r,round:0,seq:[],phase:'show',pt:-1,inp:0,lit:-1,tap:-1,tapT:0,said:false};newSeq();}
  S.banner=D3.banner;$('#h-lvl').textContent=D3.banner;$('#h-hint').textContent=D3.hint;$('#st-neat small').textContent=D3.label;
  say('#say-play',k,D3.intro,'happy',true);
  hud3();[0,.75,1.5].forEach(w=>tone(660,.12,'square',.05,w));tone(990,.3,'square',.06,2.25);}
@@ -567,7 +571,7 @@ function spark(x,y,col,n){for(let k=0;k<n;k++){const a=Math.random()*Math.PI*2,v
 /* gel-formule */
 function newSeq(){const g=S.gel,len=g.rounds[g.round];g.seq=[];for(let k=0;k<len;k++){let j;do{j=Math.floor(Math.random()*4);}while(k&&j===g.seq[k-1]&&Math.random()<.7);g.seq.push(j);}g.phase='show';g.pt=-1.1;g.inp=0;g.lit=-1;}
 function potPos(j){const sx=Math.min(R*2.0,W/2-R*.45),x=BX+(j<2?-1:1)*sx,y=BY+(j%2?R*.55:-R*.85);return{x,y,r:R*.34};}
-function gelOn(){return GRP.id===0?.75:GRP.id===1?.6:.48;}
+function gelOn(){return GRP.id===0?.75:GRP.id===1?.6:GRP.id>=4?.4:.48;}
 function tick3(dt){const k=S.k3,m=S.m,n=m.n;
  S.sparks=S.sparks.filter(p=>{p.life-=dt;p.vy+=300*dt;p.x+=p.vx*dt;p.y+=p.vy*dt;return p.life>0;});
  S.drips=S.drips.filter(d=>{d.vy+=600*dt;d.y+=d.vy*dt;return d.y<H+10;});
@@ -848,12 +852,13 @@ function newKlitTarget(k){k.tx=40+Math.random()*(TK.WW-80);k.ty=40+Math.random()
 function startTank(){if(!GRP)return;S.run=false;MS.run=false;S.mode='tank';Object.assign(TK,{lv:0,score:0,res:[],run:true});
  const r=$('#tstage').getBoundingClientRect();show('#s-tank');placeSay();const rr=tcv.getBoundingClientRect();TK.WW=640;TK.WH=Math.round(Math.max(480,Math.min(1100,640*(rr.height/Math.max(1,rr.width)))));
  tLayout();tBegin();TK.last=performance.now();requestAnimationFrame(tFrame);}
-function tBegin(){const L=TLV[TK.lv];tBuild();TK.lim=Math.round(L.time*GRP.time);TK.left=TK.lim;TK.cd=3;TK.t=0;TK.said={};
+function tBegin(){const L=TLV[TK.lv];tBuild();TK.lim=Math.round(L.time*GRP.time);if(GRP.id===5)TK.lim=Math.round(L.time*.8);TK.left=TK.lim;TK.cd=3;TK.t=0;TK.said={};
  $('#t-lvl').textContent=`Level ${TK.lv+1} · ${L.name}`;tHud();
- say('#say-tank',host(),[`Rij met je tondeuse-tank over het haar. Maai ${Math.round(L.goal*100)} procent voordat de tijd op is!`,'Pas op voor de haarlakbussen! Botsen laat je tank tollen.','De klitballen laten het haar weer groeien. Ram ze kapot!'][TK.lv],'happy',true);
+ say('#say-tank',host(),[`Rij met je tondeuse-tank over het haar. Maai ${Math.round(tGoal()*100)} procent voordat de tijd op is!`,'Pas op voor de haarlakbussen! Botsen laat je tank tollen.','De klitballen laten het haar weer groeien. Ram ze kapot!'][TK.lv],'happy',true);
  [0,.75,1.5].forEach(w=>tone(660,.12,'square',.05,w));tone(990,.3,'square',.06,2.25);}
+function tGoal(){return Math.min(.95,TLV[TK.lv].goal+(GRP&&GRP.id===4?.05:GRP&&GRP.id===5?.1:0));}
 function tHud(){$('#t-score').textContent=Math.round(TK.score);$('#t-pct').textContent=Math.floor(TK.mowed/TK.total*100)+'%';
- const f=Math.max(0,TK.left/TK.lim),tb=$('#t-time');tb.style.transform=`scaleX(${f})`;tb.classList.toggle('low',TK.left<8);$('#t-goal').textContent='Doel '+Math.round(TLV[TK.lv].goal*100)+'%';}
+ const f=Math.max(0,TK.left/TK.lim),tb=$('#t-time');tb.style.transform=`scaleX(${f})`;tb.classList.toggle('low',TK.left<8);$('#t-goal').textContent='Doel '+Math.round(tGoal()*100)+'%';}
 function tPos(e){const r=tcv.getBoundingClientRect();return{x:(e.clientX-r.left-TOX)/TS,y:(e.clientY-r.top-TOY)/TS};}
 tcv.addEventListener('pointerdown',e=>{ac();tcv.setPointerCapture(e.pointerId);Object.assign(TK.ptr,tPos(e),{down:true});if(TK.run&&TK.cd<=0)humOn();});
 tcv.addEventListener('pointermove',e=>{if(TK.ptr.down)Object.assign(TK.ptr,tPos(e));});
@@ -903,12 +908,12 @@ function tTick(dt){const cs=TK.cs;TK.left-=dt;
    if(p.type==='goud'){TK.score+=100;TK.floats.push({x:p.x,y:p.y,txt:'Gouden lok! +100',col:'#c9a063',life:1.1});}
    [784,1046,1318].forEach((f,i)=>tone(f,.1,'triangle',.06,i*.06));return false;}return p.life>0;});
  TK.parts=TK.parts.filter(p=>{p.life-=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.vx*=.94;p.vy*=.94;p.rot=(p.rot||0)+dt*8;return p.life>0;});
- if(!TK.said.half&&TK.mowed/TK.total>=TLV[TK.lv].goal/2){TK.said.half=1;say('#say-tank',host(),'Halverwege! Lekker bezig, ga zo door.','happy',true);}}
+ if(!TK.said.half&&TK.mowed/TK.total>=tGoal()/2){TK.said.half=1;say('#say-tank',host(),'Halverwege! Lekker bezig, ga zo door.','happy',true);}}
 function tFrame(ts){if(!TK.run)return;const dt=Math.min(.05,(ts-TK.last)/1000||0);TK.last=ts;TK.t+=dt;
  if(TK.cd>0)TK.cd-=dt;else tTick(dt);
  TK.floats=TK.floats.filter(f=>{f.life-=dt;f.y-=36*dt;return f.life>0;});
  tRender();tHud();
- if(TK.cd<=0&&TK.mowed/TK.total>=TLV[TK.lv].goal)return tLevelDone(true);
+ if(TK.cd<=0&&TK.mowed/TK.total>=tGoal())return tLevelDone(true);
  if(TK.cd<=0&&TK.left<=0)return tLevelDone(false);
  requestAnimationFrame(tFrame);}
 function tLevelDone(win){humOff();TK.ptr.down=false;const pct=TK.mowed/TK.total,bonus=win?Math.round(TK.left*10):0;TK.score+=bonus;TK.res.push({win,pct,bonus});
@@ -981,7 +986,7 @@ function tRender(){const c=tctx;if(!c)return;c.save();c.setTransform(1,0,0,1,0,0
  if(TK.cd>0){const el=3-TK.cd,lbl=el<.75?'3':el<1.5?'2':el<2.25?'1':'MAAI!',R2=Math.min(TW,TH)*.22;c.fillStyle='rgba(234,246,255,.55)';c.fillRect(0,0,TW,TH);c.textAlign='center';c.textBaseline='middle';c.lineJoin='round';
   c.font=`${Math.round(Math.max(16,R2*.2))}px Bungee, Impact, sans-serif`;c.lineWidth=6;c.strokeStyle='#fff';const ban=`Level ${TK.lv+1} · ${TLV[TK.lv].name}`;c.strokeText(ban,TW/2,TH*.28);c.fillStyle=NAVY;c.fillText(ban,TW/2,TH*.28);
   c.font=`${Math.round(R2*.9)}px Bungee, Impact, sans-serif`;c.lineWidth=14;c.strokeStyle=NAVY;c.strokeText(lbl,TW/2,TH*.47);c.fillStyle='#ffc928';c.fillText(lbl,TW/2,TH*.47);
-  c.font=`700 ${Math.round(Math.max(15,R2*.14))}px Rubik, sans-serif`;c.lineWidth=5;c.strokeStyle='#fff';const sub=`Maai ${Math.round(TLV[TK.lv].goal*100)}% van het haar`;c.strokeText(sub,TW/2,TH*.47+R2*.75);c.fillStyle=NAVY;c.fillText(sub,TW/2,TH*.47+R2*.75);c.textBaseline='alphabetic';}}
+  c.font=`700 ${Math.round(Math.max(15,R2*.14))}px Rubik, sans-serif`;c.lineWidth=5;c.strokeStyle='#fff';const sub=`Maai ${Math.round(tGoal()*100)}% van het haar`;c.strokeText(sub,TW/2,TH*.47+R2*.75);c.fillStyle=NAVY;c.fillText(sub,TW/2,TH*.47+R2*.75);c.textBaseline='alphabetic';}}
 function tFinish(){TK.run=false;humOff();const done=TK.res.filter(r=>r.win).length,stars=done,score=Math.round(TK.score);
  const before=PICKABLE.filter(crewOpen);DB.tank=Math.max(DB.tank||0,stars);persist();
  const fresh=PICKABLE.filter(id=>crewOpen(id)&&!before.includes(id)),ue=$('#e-unlock');ue.hidden=!fresh.length;
@@ -1058,7 +1063,7 @@ function drawTool(c,id,x,y,s){c.save();c.translate(x,y);c.lineJoin='round';c.lin
  c.restore();}
 const MS={cards:[],open:[],lock:false,pairs:0,moves:0,n:0,t0:0,run:false};
 const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
-function startMem(){if(!GRP)return;S.run=false;S.mode='mem';const n=GRP.id===0?6:GRP.id===3?10:8;
+function startMem(){if(!GRP)return;S.run=false;S.mode='mem';const n=GRP.id===0?6:GRP.id===5?11:GRP.id>=3?10:8;
  const pick=shuffle(TOOLS.slice()).slice(0,n),deck=shuffle([...pick,...pick].map(t=>({t})));
  Object.assign(MS,{cards:deck,open:[],lock:false,pairs:0,moves:0,n,t0:performance.now(),run:true});
  const g=$('#mgrid');g.textContent='';g.dataset.n=n;const badge=document.querySelector('.glogo svg').outerHTML;
@@ -1121,15 +1126,15 @@ $('#save').addEventListener('submit',e=>{e.preventDefault();if(!RES||RES.saved)r
 addEventListener('resize',()=>{if(S.run)layout();});
 /* uitleg stap voor stap */
 function setAge(a){AGE=a;GRP=GROUPS.find(g=>a>=g.from&&a<=g.to);
- $('#a-age').textContent=a>=12?'12+ jaar':a+' jaar';$('#a-lvl').textContent=GRP.desc;
+ $('#a-age').textContent=a===13?'EXPERT':a===14?'PRO':a>=12?'12+ jaar':a+' jaar';document.body.classList.toggle('promode',a>=13);$('#a-lvl').textContent=GRP.desc;
  document.querySelectorAll('.age').forEach(b=>b.classList.toggle('sel',+b.dataset.a===a));updateAgebar();renderBoard();}
 const agesEl=$('#ages');
-for(let a=4;a<=12;a++){const b=document.createElement('button');b.type='button';b.className='age';b.dataset.a=a;b.textContent=a===12?'12+':a;b.setAttribute('aria-label',a===12?'12 jaar of ouder':a+' jaar');
+for(let a=4;a<=14;a++){const b=document.createElement('button');b.type='button';b.className='age'+(a>=13?' age-pro':'');b.dataset.a=a;b.textContent=a===13?'EXPERT':a===14?'PRO':a===12?'12+':a;b.setAttribute('aria-label',a===13?'Expert-modus':a===14?'Pro-modus':a===12?'12 jaar of ouder':a+' jaar');
  b.addEventListener('click',()=>{ac();tone(523+a*30,.12,'square',.05);setAge(a);updNext();setTimeout(()=>{if(STEPS[WI].k==='leeftijd'&&!$('#s-intro').hidden){WSUB=99;nextStep();}},450);});agesEl.append(b);}
 
 const GEN=[
  {k:'scherm',who:'haarriet',say:['Speel je op een telefoon of op een tablet? Tik erop.'],need:()=>!!DB.device},
- {k:'leeftijd',who:'haarriet',say:['Hoe oud ben je? Tik op je leeftijd. Dan maak ik het spel precies goed voor jou.'],need:()=>!!GRP},
+ {k:'leeftijd',who:'haarriet',say:['Hoe oud ben je? Tik op je leeftijd. Dan maak ik het spel precies goed voor jou.','Ben je een echte topper? Kies dan EXPERT of PRO. Dat is extra moeilijk!'],need:()=>!!GRP},
  {k:'kapper',who:'haarriet',say:()=>['Kies een kapper. Die helpt jou tijdens het spelen.',`Met sterren speel je nieuwe kappers vrij. Jij hebt ${totalStars()} van de ${MAXST()} sterren.`]}];
 const KNIP=[
  {k:'tondeuse',who:()=>host(),say:['Level 1: houd je vinger op de baard en schuif de tondeuse eroverheen.']},
