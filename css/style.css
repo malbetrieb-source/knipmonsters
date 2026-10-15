@@ -368,10 +368,11 @@ body.salon input{-webkit-user-select:text;user-select:text}
 .plate .ptag{font-size:11px;font-weight:700;color:#8a6a3a;background:#fff2c2;border-radius:999px;padding:2px 8px}
 .plate.award{border-color:#c9a063;box-shadow:0 5px 0 #c9a063}
 
-.ages .age-pro{grid-column:span 2;aspect-ratio:auto;font-size:20px;letter-spacing:.04em;color:#fff;background:linear-gradient(135deg,#1d2b4f,#3b2a6b)!important;border-color:#1d2b4f;box-shadow:0 5px 0 #c9a063;position:relative;overflow:hidden}
+.ages .age-pro{font-size:clamp(11px,1.35vw,14px);letter-spacing:.02em;padding:0;color:#fff;background:linear-gradient(135deg,#1d2b4f,#3b2a6b)!important;border-color:#1d2b4f;box-shadow:0 5px 0 #c9a063;position:relative;overflow:hidden}
 .ages .age-pro::after{content:"";position:absolute;inset:-40%;background:linear-gradient(115deg,transparent 40%,rgba(255,255,255,.35) 50%,transparent 60%);animation:shine 3.2s ease-in-out infinite}
 .ages .age-pro[data-a="14"]{background:linear-gradient(135deg,#7a1f2d,#c9a063)!important;box-shadow:0 5px 0 #1d2b4f}
 .ages .age-pro.sel{outline:4px solid var(--pink);outline-offset:3px}
 @keyframes shine{0%,60%{transform:translateX(-60%)}100%{transform:translateX(60%)}}
 @media (prefers-reduced-motion:reduce){.ages .age-pro::after{animation:none}}
 body.promode .agebar{background:linear-gradient(90deg,#fff,#fff2c2)}
+@media (min-width:700px){.ages{grid-template-columns:repeat(11,minmax(0,1fr));gap:8px}.age{font-size:22px}.ages .age-pro{font-size:10px;letter-spacing:0}}
