@@ -1,5 +1,5 @@
 /* offline voor de salon-tablets */
-const C='capaldi-kids-20261015181351';
+const C='capaldi-kids-20261015182158';
 const CORE=['./','index.html','css/style.css','js/game.js','assets/capaldi-c.png','assets/capaldi-woord.png','assets/capaldi-logo.png','assets/robotfabriek-robot.png','assets/robotfabriek-woord.png','assets/icon.svg','assets/icon-192.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting()));});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});
