@@ -329,7 +329,7 @@ function placeSay(){const sp=$('#say-play'),st=$('.stage');if(document.body.clas
 function setDevice(d,go){DB.device=d;persist();document.body.classList.toggle('phone',d==='phone');placeSay();
  const b=$('#devbtn');b.hidden=false;b.textContent='Scherm: '+(d==='phone'?'telefoon':'tablet');document.querySelectorAll('.dev').forEach(x=>x.classList.toggle('sel',x.dataset.dev===d));}
 document.querySelectorAll('.dev').forEach(b=>b.addEventListener('click',()=>{ac();tone(784,.1,'square',.05);setDevice(b.dataset.dev);updNext();setTimeout(()=>{if(STEPS[WI].k==='scherm'&&!$('#s-intro').hidden){WSUB=99;nextStep();}},450);}));
-$('#devbtn').addEventListener('click',()=>{if(S.run){S.run=false;humOff();}goStep(1,true);});
+$('#devbtn').addEventListener('click',()=>{if(S.run){S.run=false;humOff();}goStep(0,true);});
 {const rec=matchMedia('(max-width:600px)').matches?'phone':'tablet';const b=document.querySelector(`.dev[data-dev="${rec}"]`);const t=document.createElement('span');t.className='rec';t.textContent='Past bij dit scherm';b.append(t);}
 const L=()=>S.lvl===1?{n:S.m.beard.n,arr:S.beard,geom:geomB,grow:S.m.beard.grow*GRP.grow*PK().grow,time:Math.round(S.m.beard.time*GRP.time)+PK().time,tgt:(u,i)=>S.m.beard.target(u,i),style:S.m.beard.style}
                      :{n:S.m.n,arr:S.hair,geom:geomH,grow:S.m.grow*GRP.grow*PK().grow,time:Math.round(S.m.time*GRP.time)+PK().time,tgt:(u,i)=>S.m.target(u,i),style:S.m.style};
@@ -756,7 +756,7 @@ $('#c-print-empty').addEventListener('click',()=>{if(!CK.plate)return;const keep
 $('#c-other').addEventListener('click',()=>{$('#c-edit').hidden=true;$('#c-done').hidden=true;$('#c-pick').hidden=false;renderPlates();say('#say-color',host(),'Kies een kleurplaat.','happy');});
 $('#c-again').addEventListener('click',()=>$('#c-other').click());
 $('#c-quit').addEventListener('click',()=>{toStart();});
-$('#g-color').addEventListener('click',()=>{ac();startColor();});
+$('#g-color').addEventListener('click',()=>{ac();openGame('color');});
 addEventListener('resize',()=>{if(!$('#s-color').hidden&&!$('#c-edit').hidden&&CK.plate){const cv=$('#c-cv'),sz=Math.round(cv.getBoundingClientRect().width);if(sz&&sz!==CK.sz){CK.dctx=fitCanvas(cv,sz,sz);CK.sz=sz;drawColor();}}});
 
 $('#again').addEventListener('click',()=>S.mode==='mem'?startMem():start(S.m));
@@ -851,8 +851,8 @@ function finishMem(){const n=MS.n,secs=(performance.now()-MS.t0)/1000;
  ids.forEach((id,k)=>{const x=82+(k%2)*136,y=78+Math.floor(k/2)*128;c.save();c.translate(x,y);c.rotate((k%2?1:-1)*.08);c.fillStyle='#fff';c.strokeStyle=NAVY;c.lineWidth=3;c.beginPath();c.roundRect(-56,-60,112,120,14);c.fill();c.stroke();c.restore();drawTool(c,id,x,y,40);});
  renderBoard();renderCrew();}
 $('#m-quit').addEventListener('click',()=>{MS.run=false;renderCrew();toStart();});
-$('#g-knip').addEventListener('click',()=>{ac();openKnip();});
-$('#g-mem').addEventListener('click',()=>{ac();startMem();});
+$('#g-knip').addEventListener('click',()=>{ac();openGame('knip');});
+$('#g-mem').addEventListener('click',()=>{ac();openGame('mem');});
 function renderGames(){const a=fitCanvas($('#g-knip canvas'),160,110);a.clearRect(0,0,160,110);drawMonster(a,M[0],80,64,22,{lens:null,time:1.2,mood:'smile'});
  const b=fitCanvas($('#g-mem canvas'),160,110);b.clearRect(0,0,160,110);[[50,'schaar',-.12],[110,'fohn',.12]].forEach(([x,id,r])=>{b.save();b.translate(x,55);b.rotate(r);b.fillStyle='#fff';b.strokeStyle=NAVY;b.lineWidth=2.5;b.beginPath();b.roundRect(-30,-40,60,80,10);b.fill();b.stroke();b.restore();drawTool(b,id,x,55,22);});
  {const k=fitCanvas($('#g-color canvas'),160,110);k.clearRect(0,0,160,110);k.fillStyle='#fff';k.strokeStyle=NAVY;k.lineWidth=2.5;k.beginPath();k.roundRect(20,12,78,86,8);k.fill();k.stroke();
@@ -880,11 +880,9 @@ for(let a=4;a<=12;a++){const b=document.createElement('button');b.type='button';
  b.addEventListener('click',()=>{ac();tone(523+a*30,.12,'square',.05);setAge(a);updNext();setTimeout(()=>{if(STEPS[WI].k==='leeftijd'&&!$('#s-intro').hidden){WSUB=99;nextStep();}},450);});agesEl.append(b);}
 
 const GEN=[
- {k:'welkom',who:'haarriet',say:['Hoi! Welkom bij Capaldi Kappers. Ik ben Haarriët.','Hier kun je knippen, memory spelen en kleuren. Ik leg je kort uit hoe het werkt.'],next:'Beginnen'},
  {k:'scherm',who:'haarriet',say:['Speel je op een telefoon of op een tablet? Tik erop.'],need:()=>!!DB.device},
- {k:'leeftijd',who:'haarriet',say:['Hoe oud ben je? Tik op je leeftijd.'],need:()=>!!GRP},
- {k:'kapper',who:'haarriet',say:()=>['Kies een kapper. Die helpt jou tijdens het spelen.',`Met sterren speel je nieuwe kappers vrij. Jij hebt ${totalStars()} van de ${MAXST()} sterren.`]},
- {k:'spellen',who:()=>host(),say:['Je bent er klaar voor!','Kies nu wat je wilt spelen. Bij elk spel leg ik het nog even uit.'],next:'Naar de spellen'}];
+ {k:'leeftijd',who:'haarriet',say:['Hoe oud ben je? Tik op je leeftijd. Dan maak ik het spel precies goed voor jou.'],need:()=>!!GRP},
+ {k:'kapper',who:'haarriet',say:()=>['Kies een kapper. Die helpt jou tijdens het spelen.',`Met sterren speel je nieuwe kappers vrij. Jij hebt ${totalStars()} van de ${MAXST()} sterren.`]}];
 const KNIP=[
  {k:'tondeuse',who:()=>host(),say:['Level 1: houd je vinger op de baard en schuif de tondeuse eroverheen.']},
  {k:'schaar',who:()=>host(),say:['Level 2: veeg met je vinger door het haar om te knippen.']},
@@ -892,7 +890,9 @@ const KNIP=[
  {k:'groei',who:()=>host(),say:['Goed nieuws: het haar groeit steeds weer aan!','Zie je "Groeit aan!"? Knip het nog een keer bij, dan pak je weer extra punten.']},
  {k:'goud',who:'lokkie',say:['Ik ben Lokkie! Zie je een gouden lok? Tik er snel op voor 50 extra punten!']},
  {k:'klaar',who:()=>host(),say:['Super, je weet alles!','Kies nu wie er bij Capaldi in de stoel mag.'],next:'Naar de monsters'}];
-let WSUB=0,STEPS=GEN;
+const MEMU=[{k:'mem',who:()=>host(),say:['Bij memory liggen alle kaartjes omgedraaid.','Tik op twee kaartjes. Zijn ze hetzelfde? Dan heb je een paar!','Bij elk paar vertel ik wat je bij de kapper met dat ding doet.'],next:'Spelen!'}];
+const COLU=[{k:'kleur',who:()=>host(),say:['Kies eerst een kleurplaat.','Tik op een kleur en dan op een vlak. Hup, ingekleurd!','Met de kwast kun je ook zelf tekenen. Rustig aan, er is geen tijd.'],next:'Kleuren!'}];
+let WSUB=0,STEPS=GEN,AFTER=null,AFTERSEEN=null;
 const parts=st=>{const v=typeof st.say==='function'?st.say():st.say;return Array.isArray(v)?v:[v];};
 function talk(){const st=STEPS[WI],p=parts(st),k=Math.min(WSUB,p.length-1);
  say('#say-start',val(st.who),p[k],'happy');const nm=$('#say-start b');if(p.length>1)nm.textContent+=`  ${'●'.repeat(k+1)}${'○'.repeat(p.length-k-1)}`;
@@ -901,25 +901,30 @@ function talk(){const st=STEPS[WI],p=parts(st),k=Math.min(WSUB,p.length-1);
  $('#w-back').hidden=!WSINGLE&&WI===0&&k===0&&STEPS===GEN;}
 let WI=0,WSINGLE=false,demoRaf=0;
 const val=v=>typeof v==='function'?v():v;
-function goStep(i,single,track){if(track)STEPS=track;else if(single)STEPS=GEN;WI=i;WSINGLE=!!single;const st=STEPS[i];
+function goStep(i,single,track){if(track)STEPS=track;else if(single){STEPS=GEN;AFTER=null;}WI=i;WSINGLE=!!single;const st=STEPS[i];
  document.querySelectorAll('.wstep').forEach(el=>{const on=el.dataset.k===st.k;el.hidden=!on;if(on){el.style.animation='none';void el.offsetHeight;el.style.animation='';}});
  if(st.k==='kapper')renderCrew();
  const d=$('#w-dots');d.hidden=WSINGLE;d.innerHTML=STEPS.map((_,j)=>`<i class="${j===i?'on':j<i?'done':''}"></i>`).join('');
- $('#w-skip').hidden=WSINGLE||i===STEPS.length-1;$('#w-skip').textContent=STEPS===KNIP?'Uitleg overslaan':'Intro overslaan';
+ $('#w-skip').hidden=WSINGLE||i===STEPS.length-1;$('#w-skip').textContent='Uitleg overslaan';$('#w-skip').hidden=WSINGLE||!AFTER||i===STEPS.length-1||(st.need&&!st.need())||STEPS.slice(i).some(x=>x.need&&!x.need());
  WSUB=0;talk();updNext();show('#s-intro');startDemo();}
 function updNext(){const st=STEPS[WI],more=WSUB<parts(st).length-1;$('#w-next').disabled=!more&&!!(st.need&&!st.need());}
-function nextStep(){if($('#w-next').disabled)return;if(WSUB<parts(STEPS[WI]).length-1){WSUB++;talk();updNext();tone(587,.06,'triangle',.04);return;}if(WSINGLE||WI>=STEPS.length-1){if(!WSINGLE){if(STEPS===KNIP)DB.knipSeen=true;else DB.introSeen=true;persist();}STEPS===KNIP&&!WSINGLE?toKnip():toStart();return;}tone(660,.08,'square',.04);goStep(WI+1);}
-function prevStep(){if(WSUB>0){WSUB=Math.min(WSUB,parts(STEPS[WI]).length-1)-1;if(WSUB>=0){talk();updNext();return;}WSUB=0;}if(WSINGLE){toStart();return;}if(WI>0)goStep(WI-1);else if(STEPS===KNIP)toStart();}
-function toStart(){stopDemo();if(!GRP){goStep(2,true);say('#say-start','haarriet','Hoe oud ben je? Tik op je leeftijd, dan kun je meteen spelen.','happy');return;}updateAgebar();renderDex();renderBoard();renderGames();showView('home');show('#s-start');}
+function nextStep(){if($('#w-next').disabled)return;if(WSUB<parts(STEPS[WI]).length-1){WSUB++;talk();updNext();tone(587,.06,'triangle',.04);return;}if(WSINGLE||WI>=STEPS.length-1){if(!WSINGLE&&AFTER){finishTrack();return;}toStart();return;}tone(660,.08,'square',.04);goStep(WI+1);}
+function prevStep(){if(WSUB>0){WSUB=Math.min(WSUB,parts(STEPS[WI]).length-1)-1;if(WSUB>=0){talk();updNext();return;}WSUB=0;}if(WSINGLE){toStart();return;}if(WI>0)goStep(WI-1);else{AFTER=null;toStart();}}
+function toStart(){stopDemo();$('.agebar').hidden=!GRP;updateAgebar();renderDex();renderBoard();renderGames();showView('home');show('#s-start');
+ say('#say-home','haarriet',GRP?'Wat wil je nu spelen? Tik op een spel.':'Hoi! Welkom bij Capaldi Kappers. Ik ben Haarriët. Tik op een spel om te beginnen!','happy');}
+function finishTrack(){const f=AFTER,k=AFTERSEEN;AFTER=null;DB.crewSeen=true;if(k)DB[k]=true;persist();stopDemo();f();}
+const GAMES={knip:{steps:()=>KNIP,seen:'knipSeen',go:()=>toKnip()},mem:{steps:()=>MEMU,seen:'memSeen',go:()=>startMem()},color:{steps:()=>COLU,seen:'colorSeen',go:()=>startColor()}};
+function openGame(g,again){const G=GAMES[g],list=[];if(!DB.device)list.push(GEN[0]);if(!GRP&&g!=='color')list.push(GEN[1]);if(!DB.crewSeen&&!DB.introSeen)list.push(GEN[2]);
+ if(again||!DB[G.seen])list.push(...G.steps());if(!list.length){G.go();return;}AFTER=G.go;AFTERSEEN=G.seen;goStep(0,false,list);}
 function showView(v){$('#home-area').hidden=v!=='home';$('#knip-area').hidden=v!=='knip';}
 function toKnip(){stopDemo();updateAgebar();renderDex();showView('knip');show('#s-start');say('#say-knip',host(),'Kies een monster. Wie mag er als eerste in de stoel?','happy');}
-function openKnip(){if(!GRP){toStart();return;}if(!DB.knipSeen)goStep(0,false,KNIP);else toKnip();}
+
 $('#w-next').addEventListener('click',nextStep);
 $('#w-back').addEventListener('click',prevStep);
-$('#w-skip').addEventListener('click',()=>{ac();if(STEPS===KNIP){DB.knipSeen=true;persist();toKnip();return;}if(!DB.device)setDevice(matchMedia('(max-width:600px)').matches?'phone':'tablet');DB.introSeen=true;persist();toStart();});
-$('#a-change').addEventListener('click',()=>goStep(2,true));
-$('#c-change').addEventListener('click',()=>goStep(3,true));
-$('#w-again').addEventListener('click',()=>goStep(0,false,KNIP));
+$('#w-skip').addEventListener('click',()=>{ac();if(AFTER)finishTrack();else toStart();});
+$('#a-change').addEventListener('click',()=>goStep(1,true));
+$('#c-change').addEventListener('click',()=>goStep(2,true));
+$('#w-again').addEventListener('click',()=>openGame('knip',true));
 $('#k-home').addEventListener('click',()=>{ac();toStart();});
 
 /* uitleg-animaties */
@@ -933,8 +938,26 @@ function tag(c,txt,x,y,col,size,pill){c.save();c.font=`${size}px Bungee, Impact,
 function pointer(c,x1,y1,x2,y2,col){c.save();c.strokeStyle=col;c.lineWidth=3;c.lineCap='round';c.setLineDash([4,5]);c.beginPath();c.moveTo(x1,y1);c.lineTo(x2,y2);c.stroke();c.setLineDash([]);c.fillStyle=col;c.beginPath();c.arc(x2,y2,4,0,Math.PI*2);c.fill();c.restore();}
 function finger(c,x,y){c.save();c.fillStyle='#f3cba9';c.strokeStyle=NAVY;c.lineWidth=3;c.beginPath();c.roundRect(x-11,y-4,22,46,11);c.fill();c.stroke();c.fillStyle='#fff';c.beginPath();c.roundRect(x-6,y,12,10,5);c.fill();c.restore();}
 function tipOf(geom,m,i,cx,cy,R,Lf){const g=geom(m,i,cx,cy,R),L=(Lf??g.t)*g.ml;return[g.ax+Math.cos(g.d)*L,g.ay+Math.sin(g.d)*L];}
+function demoMem(c,t){const w=380,h=300;c.fillStyle='#ffe3f0';c.fillRect(0,0,w,h);const per=5,ph=t%per,ids=['schaar','kam','schaar','fohn'];
+ const open=[ph>.8&&ph<4.6,ph>3.6,ph>1.8&&ph<4.6,false],done=ph>2.6&&ph<4.6;
+ ids.forEach((id,k)=>{const x=60+k*87,y=150,cw=74,ch=100;let a=0;if(open[k])a=1;c.save();c.translate(x,y);
+  const isDone=done&&(k===0||k===2);c.fillStyle=a?(isDone?'#eafff1':'#fff'):'#ffd0e5';c.strokeStyle=isDone?'#2fb36b':NAVY;c.lineWidth=3;c.beginPath();c.roundRect(-cw/2,-ch/2,cw,ch,12);c.fill();c.stroke();
+  c.restore();if(a)drawTool(c,id,x,y,26);else capaldiMark(c,x,y,18);});
+ const fx=ph<.8?60:ph<1.8?60+(ph-.8)*174:234,fy=ph<1.8?205:205;if(ph<2.2)finger(c,fx,fy);
+ if(done)tag(c,'Een paar!',w/2,h-24,'#2fb36b',18,true);else tag(c,'Tik op twee kaartjes',w/2,h-24,NAVY,16,true);}
+let KLINE=null;
+function demoKleur(c,t){const w=380,h=300;c.fillStyle='#d6f6f4';c.fillRect(0,0,w,h);
+ if(!KLINE){const p=PLATES[3];if(!p._line){p._line=buildPlate(p).line;}KLINE=p._line;}
+ const S2=.42,ox=w/2-300*S2,oy=8;c.fillStyle='#fff';c.strokeStyle=NAVY;c.lineWidth=3;c.beginPath();c.roundRect(ox,oy,600*S2,600*S2,14);c.fill();c.stroke();
+ const per=4.5,ph=t%per,tx=ox+300*S2,ty=oy+260*S2,r=Math.max(0,(ph-1.2))*120;
+ c.save();c.beginPath();c.roundRect(ox,oy,600*S2,600*S2,14);c.clip();c.beginPath();c.arc(tx,ty,r,0,Math.PI*2);c.clip();c.translate(ox,oy);c.scale(S2,S2);drawCrew(c,'lokkie',300,290,150,'happy');c.restore();
+ c.drawImage(KLINE,ox,oy,600*S2,600*S2);
+ ['#ff5fa2','#ffc928','#22c3c3','#8a5cf6'].forEach((col,i)=>{c.fillStyle=col;c.strokeStyle=NAVY;c.lineWidth=2.5;c.beginPath();c.arc(ox+600*S2+28,40+i*42,14,0,Math.PI*2);c.fill();c.stroke();if(i===1){c.strokeStyle='#ff5fa2';c.lineWidth=3;c.beginPath();c.arc(ox+600*S2+28,40+i*42,19,0,Math.PI*2);c.stroke();}});
+ if(ph<1.3)finger(c,tx,ty);tag(c,ph<1.3?'Tik op een vlak':'Ingekleurd!',w/2,h-20,ph<1.3?NAVY:'#2fb36b',15,true);}
 function drawDemo(c,k,t){const w=380,h=300,m=M[0],f=fitR(w,h),R=f.R,cy=f.cy,cx=w/2;c.clearRect(0,0,w,h);
  const sb=styledBeard(m),sh=styledLens(m);
+ if(k==='mem'){demoMem(c,t);return;}
+ if(k==='kleur'){demoKleur(c,t);return;}
  if(k==='hello'){demoBg(c,w,h,R,cy);drawMonster(c,m,cx,cy,R,{time:t,mood:'smile',look:{x:cx+Math.sin(t*1.3)*160,y:cy+Math.cos(t)*40}});return;}
  if(k==='clip'||k==='cut'){const per=4.6,ph=t%per,p=Math.min(1,ph/3.3),clip=k==='clip';const R=clip?f.R*1.35:f.R,cy=clip?112:f.cy;
   const n=clip?m.beard.n:m.n,tg=(u,i)=>clip?m.beard.target(u,i):m.target(u,i);
@@ -984,7 +1007,8 @@ function drawDemo(c,k,t){const w=380,h=300,m=M[0],f=fitR(w,h),R=f.R,cy=f.cy,cx=w
 }
 
 if(DB.device)setDevice(DB.device);
-renderDex();renderBoard();renderCrew();renderGames();goStep(0);
+if(DB.device)setDevice(DB.device);
+renderDex();renderBoard();renderCrew();renderGames();toStart();
 if(/[?&]test\b/.test(location.search))window.__KM={S,MS,M,CK,PLATES,openPlate,startColor,fillAt,start,begin3,frame3,finish,startMem,openMeet,setAge,toStart,get GRP(){return GRP;}};
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{renderDex();renderCrew();renderGames();});
 })();

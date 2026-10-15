@@ -316,3 +316,5 @@ body.phone .lvl{font-size:11px;padding:2px 9px}
 #print-area{display:none}
 @media (max-width:760px){.ceditor{grid-template-columns:1fr}.cside{gap:10px}.pal{grid-template-columns:repeat(12,minmax(0,1fr));gap:5px}.swatch{border-width:2px;box-shadow:0 2px 0 var(--navy)}}
 @media print{body *{visibility:hidden!important}#print-area,#print-area *{visibility:visible!important}#print-area{display:block!important;position:absolute;left:0;top:0;width:100%}#print-area img{width:100%;height:auto}}
+
+.hero-home h1{font-size:clamp(38px,7vw,64px)}

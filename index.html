@@ -22,14 +22,6 @@
       <div class="dots" id="w-dots" aria-hidden="true"></div>
       <div class="say" id="say-start"><canvas width="136" height="136" aria-hidden="true"></canvas><p class="bubble" aria-live="polite"><b></b><span></span></p></div>
 
-      <div class="wstep" data-k="welkom">
-        <div class="hero" style="align-items:center;text-align:center">
-          <p class="eyebrow">Capaldi Kappers presenteert</p>
-          <h1><span class="row1">Knip</span><span class="rain" aria-label="monsters"><span>m</span><span>o</span><span>n</span><span>s</span><span>t</span><span>e</span><span>r</span><span>s</span></span></h1>
-        </div>
-        <canvas class="demo" data-demo="hello" aria-hidden="true"></canvas>
-      </div>
-
       <div class="wstep" data-k="scherm">
         <h2 class="wtitle">Waar speel je op?</h2>
         <div class="devs">
@@ -49,9 +41,16 @@
         <div id="crew" class="crew"></div>
       </div>
 
-      <div class="wstep" data-k="spellen">
-        <h2 class="wtitle">Kies je spel!</h2>
-        <div class="wgames"><span class="wg1">Knipmonsters</span><span class="wg2">Kappersmemory</span><span class="wg3">Kapperskleurplaat</span></div>
+      <div class="wstep" data-k="mem">
+        <p class="steplabel">Kappersmemory</p>
+        <h2 class="wtitle">Zoek de paren</h2>
+        <canvas class="demo" data-demo="mem" aria-hidden="true"></canvas>
+      </div>
+
+      <div class="wstep" data-k="kleur">
+        <p class="steplabel">Kapperskleurplaat</p>
+        <h2 class="wtitle">Zo kleur je in</h2>
+        <canvas class="demo" data-demo="kleur" aria-hidden="true"></canvas>
       </div>
 
       <div class="wstep" data-k="tondeuse">
@@ -101,6 +100,11 @@
       <div class="agebar"><span>Je bent <b id="a-age"></b> · <span id="a-lvl"></span> · Jouw kapper: <b id="a-crew"></b></span>
         <div class="row"><button id="a-change" class="ghost" type="button">Andere leeftijd</button><button id="c-change" class="ghost" type="button">Andere kapper</button></div></div>
       <div id="home-area" style="display:flex;flex-direction:column;gap:22px">
+        <div class="hero hero-home">
+          <p class="eyebrow">Capaldi Kappers presenteert</p>
+          <h1><span class="row1">Capaldi</span><span class="rain" aria-label="Kids"><span>K</span><span>i</span><span>d</span><span>s</span></span></h1>
+        </div>
+        <div class="say" id="say-home"><canvas width="136" height="136" aria-hidden="true"></canvas><p class="bubble" aria-live="polite"><b></b><span></span></p></div>
       <h2 class="h2">Wat wil je spelen?</h2>
       <div class="games">
         <button class="game" id="g-knip" type="button"><canvas aria-hidden="true"></canvas><span><b>Knipmonsters</b><small>Trim en knip wilde monsters</small></span></button>
