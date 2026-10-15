@@ -318,3 +318,5 @@ body.phone .lvl{font-size:11px;padding:2px 9px}
 @media print{body *{visibility:hidden!important}#print-area,#print-area *{visibility:visible!important}#print-area{display:block!important;position:absolute;left:0;top:0;width:100%}#print-area img{width:100%;height:auto}}
 
 .hero-home h1{font-size:clamp(38px,7vw,64px)}
+
+.home-title{margin:4px 0 0;font-family:var(--f-game);font-weight:400;font-size:clamp(30px,6vw,46px);line-height:1.05;color:var(--navy);text-wrap:balance}

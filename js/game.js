@@ -916,7 +916,7 @@ function finishTrack(){const f=AFTER,k=AFTERSEEN;AFTER=null;DB.crewSeen=true;if(
 const GAMES={knip:{steps:()=>KNIP,seen:'knipSeen',go:()=>toKnip()},mem:{steps:()=>MEMU,seen:'memSeen',go:()=>startMem()},color:{steps:()=>COLU,seen:'colorSeen',go:()=>startColor()}};
 function openGame(g,again){const G=GAMES[g],list=[];if(!DB.device)list.push(GEN[0]);if(!GRP&&g!=='color')list.push(GEN[1]);if(!DB.crewSeen&&!DB.introSeen)list.push(GEN[2]);
  if(again||!DB[G.seen])list.push(...G.steps());if(!list.length){G.go();return;}AFTER=G.go;AFTERSEEN=G.seen;goStep(0,false,list);}
-function showView(v){$('#home-area').hidden=v!=='home';$('#knip-area').hidden=v!=='knip';}
+function showView(v){$('#home-area').hidden=v!=='home';$('#knip-area').hidden=v!=='knip';const ab=$('.agebar');if(v==='home')$('#say-home').after(ab);else $('#knip-area').prepend(ab);}
 function toKnip(){stopDemo();updateAgebar();renderDex();showView('knip');show('#s-start');say('#say-knip',host(),'Kies een monster. Wie mag er als eerste in de stoel?','happy');}
 
 $('#w-next').addEventListener('click',nextStep);
