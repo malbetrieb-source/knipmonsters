@@ -99,6 +99,7 @@
       <div class="games">
         <button class="game" id="g-knip" type="button"><canvas aria-hidden="true"></canvas><span><b>Knipmonsters</b><small>Trim en knip wilde monsters</small></span></button>
         <button class="game" id="g-mem" type="button"><canvas aria-hidden="true"></canvas><span><b>Kappersmemory</b><small>Zoek de paren en leer de spullen van de kapper kennen</small><span class="mstars" id="g-mem-stars"></span></span></button>
+        <button class="game" id="g-color" type="button"><canvas aria-hidden="true"></canvas><span><b>Kapperskleurplaat</b><small>Kleur Lokkie, de monsters en de kappers in. Rustig, zonder tijd.</small></span></button>
       </div>
       <h2 class="h2">Wie mag er bij Capaldi in de stoel?</h2>
       <div id="dex" class="dex"></div>
@@ -114,6 +115,7 @@
             <li><b>Gouden lok?</b> Tik hem snel aan, dan vangt Lokkie hem voor 50 bonuspunten.</li>
             <li><b>Sterren verdienen</b> speelt nieuwe kappers vrij. Kies ze via "Andere kapper".</li>
             <li><b>Level 3:</b> Föhnaldo, Knip Kardashian, Professor Gelda en Wilma Wortelwax hebben elk een eigen level na het knippen.</li>
+            <li><b>Kapperskleurplaat:</b> kies een plaat en kleur hem in met de emmer of de kwast. Je kunt hem opslaan en printen.</li>
             <li><b>Kappersmemory:</b> zoek de paren en leer de spullen van de kapper kennen. Ook daar verdien je sterren.</li>
             <li>Alles netjes binnen de tijd? Dan krijg je 3 sterren!</li>
           </ol>
@@ -183,6 +185,43 @@
       <div id="mgrid" class="mgrid"></div>
     </div>
   </section>
+
+  <section id="s-color" hidden>
+    <div class="colwrap">
+      <div class="colhead"><span class="lvl">Kapperskleurplaat</span><button id="c-quit" class="ghost" type="button">Stoppen</button></div>
+      <div class="say" id="say-color"><canvas width="136" height="136" aria-hidden="true"></canvas><p class="bubble" aria-live="polite"><b></b><span></span></p></div>
+      <div id="c-pick">
+        <h2 class="h2">Kies een kleurplaat</h2>
+        <div id="c-plates" class="plates"></div>
+        <div id="c-gal-wrap" hidden><h2 class="h2">Jouw kleurplaten</h2><div id="c-gal" class="gal"></div></div>
+      </div>
+      <div id="c-edit" hidden>
+        <div class="ceditor">
+          <div class="cboard"><canvas id="c-cv" aria-label="Kleurplaat om in te kleuren"></canvas></div>
+          <div class="cside">
+            <h2 class="h2" id="c-title"></h2>
+            <div class="ctools" role="group" aria-label="Gereedschap">
+              <button class="ctool" type="button" data-tool="fill"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M5 11l7-7 7 7-7 7z" fill="#fff" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M5 11h14l-7 7z" fill="currentColor" opacity=".35"/><path d="M20 15c0 0 2 2.6 2 4a2 2 0 0 1-4 0c0-1.4 2-4 2-4z" fill="currentColor"/></svg><span>Vullen</span></button>
+              <button class="ctool" type="button" data-tool="brush"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M14 4l6 6-8 8-6-6z" fill="#fff" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M6 12l6 6-3 3c-2 1-5 1-6 0 1-1 1-4 3-6z" fill="currentColor"/></svg><span>Kwast</span></button>
+              <button class="ctool" type="button" data-tool="erase"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M3 15l9-9 7 7-7 7H7z" fill="#fff" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M3 15l4-4 7 7-2 2H7z" fill="currentColor" opacity=".45"/><path d="M12 20h9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Gum</span></button>
+              <button class="ctool" type="button" id="c-undo"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M9 7H4V2" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.5 7.5A8 8 0 1 1 6 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg><span>Terug</span></button>
+            </div>
+            <div id="c-pal" class="pal" role="group" aria-label="Kleuren"></div>
+            <div class="row"><button class="btn" id="c-done-btn" type="button">Klaar!</button><button class="ghost" id="c-other" type="button">Andere plaat</button><button class="ghost" id="c-print-empty" type="button">Lege plaat printen</button></div>
+          </div>
+        </div>
+      </div>
+      <div id="c-done" hidden>
+        <div class="cdone">
+          <img id="c-final" alt="Jouw kleurplaat">
+          <div class="row"><button class="btn" id="c-save" type="button">Opslaan als plaatje</button><button class="ghost" id="c-print" type="button">Printen</button><button class="ghost" id="c-again" type="button">Nog een kleurplaat</button></div>
+          <p class="note" style="margin:0">Je kleurplaat staat ook bij "Jouw kleurplaten" op dit apparaat.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="print-area" aria-hidden="true"></div>
 
   <div id="meet" class="meet" hidden role="dialog" aria-modal="true" aria-labelledby="meet-name">
     <div class="meet-card">

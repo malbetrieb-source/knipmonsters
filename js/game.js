@@ -324,7 +324,7 @@ const cv=$('#cv');let ctx,W=0,H=0,R=0,CX=0,CY=0,BX=0,BY=0;
 const S={m:null,lvl:1,hair:[],beard:[],score:0,left:0,t:0,cd:0,run:false,combo:1,lastCut:-9,shock:0,shake:0,falls:[],floats:[],trail:[],ptr:{x:0,y:0,down:false,in:false},last:0,neat:0,shorts:0,res:[],banner:''};
 const bubbles=Array.from({length:14},(_,i)=>({x:rnd(i+1),y:rnd(i+50),r:.02+rnd(i+90)*.05,v:.01+rnd(i+7)*.02}));
 function layout(){const r=cv.getBoundingClientRect();W=r.width;H=r.height;ctx=fitCanvas(cv,W,H);const f=fitR(W,H,document.body.classList.contains('phone'));R=f.R;BY=f.cy;BX=W/2;CX=BX+(S.ox||0);CY=BY+(S.oy||0);}
-function show(id){['#s-intro','#s-start','#s-play','#s-end','#s-mem'].forEach(s=>$(s).hidden=s!==id);document.body.classList.toggle('playing',id==='#s-play');window.scrollTo({top:0});}
+function show(id){['#s-intro','#s-start','#s-play','#s-end','#s-mem','#s-color'].forEach(s=>$(s).hidden=s!==id);document.body.classList.toggle('playing',id==='#s-play');window.scrollTo({top:0});}
 function placeSay(){const sp=$('#say-play'),st=$('.stage');if(document.body.classList.contains('phone'))st.append(sp);else st.after(sp);}
 function setDevice(d,go){DB.device=d;persist();document.body.classList.toggle('phone',d==='phone');placeSay();
  const b=$('#devbtn');b.hidden=false;b.textContent='Scherm: '+(d==='phone'?'telefoon':'tablet');document.querySelectorAll('.dev').forEach(x=>x.classList.toggle('sel',x.dataset.dev===d));}
@@ -654,6 +654,111 @@ $('#meet-pick').addEventListener('click',()=>{DB.crew=meetId;persist();tone(784,
  const pb=$('#meet-pick');pb.textContent='Dit is jouw kapper';pb.disabled=true;$('#meet-close').textContent='Verder';clearTimeout(meetTimer);say('#say-meet',meetId,'Top! Ik ben nu jouw kapper.','happy');});
 
 $('#quit').addEventListener('click',()=>{S.run=false;humOff();show('#s-start');renderDex();renderCrew();});
+/* Kapperskleurplaat */
+const CP=600;
+function plateBg(c){c.fillStyle='#fff';c.fillRect(0,0,CP,CP);c.strokeStyle=NAVY;c.lineWidth=5;c.lineJoin='round';
+ c.beginPath();c.moveTo(0,505);c.lineTo(CP,505);c.stroke();for(let x=-20;x<CP;x+=60){c.beginPath();c.moveTo(x,505);c.lineTo(x+40,CP);c.stroke();}
+ for(const[x,y,r]of[[70,80,34],[525,95,26],[60,300,20],[545,330,30],[480,40,14]]){c.beginPath();c.arc(x,y,r,0,Math.PI*2);c.stroke();c.beginPath();c.arc(x-r*.35,y-r*.35,r*.22,0,Math.PI*2);c.stroke();}}
+function plateMonster(c,m){plateBg(c);const f=fitR(CP,560);drawMonster(c,m,CP/2,f.cy,f.R,{lens:styledLens(m),blens:styledBeard(m),time:1.3,mood:'happy'});}
+const PLATES=[
+ {id:'vlamkop',name:'Vlamkop',draw:c=>plateMonster(c,M[0])},
+ {id:'bliksem',name:'Bliksemborstel',draw:c=>plateMonster(c,M[1])},
+ {id:'kraak',name:'Kraak',draw:c=>plateMonster(c,M[2])},
+ {id:'lokkie',name:'Lokkie',draw:c=>{plateBg(c);drawCrew(c,'lokkie',300,290,150,'happy');}},
+ {id:'haarriet',name:'Haarriët',draw:c=>{plateBg(c);drawCrew(c,'haarriet',300,235,105,'happy');}},
+ {id:'fohnaldo',name:'Föhnaldo',draw:c=>{plateBg(c);drawCrew(c,'fohnaldo',300,265,92,'happy');}},
+ {id:'spullen',name:'Kappersspullen',draw:c=>{plateBg(c);[['schaar',160,150],['fohn',440,150],['kam',160,395],['spiegel',440,395]].forEach(([id,x,y])=>{c.save();c.fillStyle='#fff';c.strokeStyle=NAVY;c.lineWidth=5;c.beginPath();c.roundRect(x-112,y-105,224,210,26);c.fill();c.stroke();c.restore();drawTool(c,id,x,y,90);});}}];
+const PAL=[['#ff5fa2','roze'],['#ff4d4d','rood'],['#ff8a3d','oranje'],['#ffc928','geel'],['#8ad94a','groen'],['#22c3c3','turquoise'],['#3fa9ff','blauw'],['#8a5cf6','paars'],['#a0673b','bruin'],['#f3cba9','huidkleur'],['#c9a063','Capaldi-goud'],['#1d2b4f','donkerblauw']];
+const CK={plate:null,tool:'fill',color:PAL[0][0],paint:null,pctx:null,line:null,mask:null,lab:null,lists:null,undo:[],dctx:null,drawing:false,last:null,dirty:false};
+const ARTKEY='capaldi-kleurplaten-v1';
+function loadArt(){try{return JSON.parse(localStorage.getItem(ARTKEY)||'[]');}catch(e){return[];}}
+function saveArt(a){try{localStorage.setItem(ARTKEY,JSON.stringify(a));return true;}catch(e){return false;}}
+function buildPlate(p){
+ const src=document.createElement('canvas');src.width=src.height=CP;const sc=src.getContext('2d');p.draw(sc);
+ const d=sc.getImageData(0,0,CP,CP).data,N=CP*CP,mask=new Uint8Array(N);
+ const line=document.createElement('canvas');line.width=line.height=CP;const lc=line.getContext('2d'),li=lc.createImageData(CP,CP),ld=li.data;
+ const nr=29,ng=43,nb=79,vr=255-nr,vg=255-ng,vb=255-nb,vv=vr*vr+vg*vg+vb*vb;
+ for(let i=0;i<N;i++){const r=d[i*4],g=d[i*4+1],b=d[i*4+2];let t=((r-nr)*vr+(g-ng)*vg+(b-nb)*vb)/vv;t=Math.max(0,Math.min(1,t));
+  const pr=nr+vr*t,pg=ng+vg*t,pb=nb+vb*t,dist=Math.hypot(r-pr,g-pg,b-pb);let a=0;
+  if(dist<34)a=1-t;else if(Math.hypot(r-nr,g-ng,b-nb)<60)a=1;
+  if(a>.04){ld[i*4]=nr;ld[i*4+1]=ng;ld[i*4+2]=nb;ld[i*4+3]=Math.round(Math.min(1,a*1.15)*255);}
+  if(a>.5)mask[i]=1;}
+ lc.putImageData(li,0,0);
+ // vlakken nummeren
+ const lab=new Int32Array(N).fill(-1);let nl=0;const stack=new Int32Array(N);
+ for(let s=0;s<N;s++){if(mask[s]||lab[s]>=0)continue;let sp=0;stack[sp++]=s;lab[s]=nl;
+  while(sp){const i=stack[--sp],x=i%CP;
+   if(x>0&&!mask[i-1]&&lab[i-1]<0){lab[i-1]=nl;stack[sp++]=i-1;}
+   if(x<CP-1&&!mask[i+1]&&lab[i+1]<0){lab[i+1]=nl;stack[sp++]=i+1;}
+   if(i>=CP&&!mask[i-CP]&&lab[i-CP]<0){lab[i-CP]=nl;stack[sp++]=i-CP;}
+   if(i<N-CP&&!mask[i+CP]&&lab[i+CP]<0){lab[i+CP]=nl;stack[sp++]=i+CP;}}
+  nl++;}
+ // lijnpixels toewijzen aan een buurvlak (geen witte randjes)
+ const own=new Int32Array(N).fill(-1);
+ for(let i=0;i<N;i++){if(!mask[i])continue;const x=i%CP,y=(i/CP)|0;
+  search:for(let r=1;r<=3;r++)for(let dy=-r;dy<=r;dy++)for(let dx=-r;dx<=r;dx++){const xx=x+dx,yy=y+dy;if(xx<0||yy<0||xx>=CP||yy>=CP)continue;const j=yy*CP+xx;if(lab[j]>=0){own[i]=lab[j];break search;}}}
+ const cnt=new Int32Array(nl+1);for(let i=0;i<N;i++){const L=lab[i]>=0?lab[i]:own[i];if(L>=0)cnt[L]++;}
+ const off=new Int32Array(nl+1);for(let k=1;k<=nl;k++)off[k]=off[k-1]+cnt[k-1];
+ const pos2=off.slice(),flat=new Int32Array(off[nl]+cnt[nl]);
+ for(let i=0;i<N;i++){const L=lab[i]>=0?lab[i]:own[i];if(L>=0)flat[pos2[L]++]=i;}
+ return{line,mask,lab,off,flat,nl};}
+function plateThumb(p,cv){const c=fitCanvas(cv,150,150);const tmp=document.createElement('canvas');tmp.width=tmp.height=CP;const tc=tmp.getContext('2d');
+ if(!p._line){const b=buildPlate(p);p._line=b.line;}tc.fillStyle='#fff';tc.fillRect(0,0,CP,CP);tc.drawImage(p._line,0,0);c.drawImage(tmp,0,0,150,150);}
+function renderPlates(){const el=$('#c-plates');el.textContent='';
+ PLATES.forEach(p=>{const b=document.createElement('button');b.type='button';b.className='plate';b.setAttribute('aria-label','Kleurplaat '+p.name);
+  const cv=document.createElement('canvas');cv.setAttribute('aria-hidden','true');b.append(cv);const s=document.createElement('span');s.textContent=p.name;b.append(s);
+  b.addEventListener('click',()=>{ac();tone(784,.08,'triangle',.05);openPlate(p);});el.append(b);requestAnimationFrame(()=>plateThumb(p,cv));});
+ const art=loadArt(),gw=$('#c-gal-wrap'),g=$('#c-gal');gw.hidden=!art.length;g.textContent='';
+ art.slice().reverse().forEach(a=>{const im=document.createElement('img');im.src=a.img;im.alt='Jouw kleurplaat '+(PLATES.find(p=>p.id===a.plate)||{name:''}).name;g.append(im);});}
+function startColor(){S.run=false;MS.run=false;S.mode='color';$('#c-pick').hidden=false;$('#c-edit').hidden=true;$('#c-done').hidden=true;show('#s-color');renderPlates();
+ say('#say-color',host(),'Kies een kleurplaat. Daarna mag je hem helemaal zelf inkleuren!','happy');}
+function openPlate(p){const b=buildPlate(p);p._line=b.line;Object.assign(CK,b,{plate:p,undo:[],dirty:false});
+ const paint=document.createElement('canvas');paint.width=paint.height=CP;CK.paint=paint;CK.pctx=paint.getContext('2d',{willReadFrequently:true});CK.pctx.fillStyle='#fff';CK.pctx.fillRect(0,0,CP,CP);
+ $('#c-pick').hidden=true;$('#c-edit').hidden=false;$('#c-done').hidden=true;$('#c-title').textContent=p.name;
+ const cv=$('#c-cv'),sz=Math.round(cv.getBoundingClientRect().width)||500;CK.dctx=fitCanvas(cv,sz,sz);CK.sz=sz;setTool('fill');drawColor();updUndo();
+ say('#say-color',host(),'Kies een kleur. Tik dan op een vlak om het in te kleuren.','happy');}
+function drawColor(){const c=CK.dctx,s=CK.sz;if(!c)return;c.fillStyle='#fff';c.fillRect(0,0,s,s);c.imageSmoothingQuality='high';c.drawImage(CK.paint,0,0,s,s);c.drawImage(CK.line,0,0,s,s);}
+function pushUndo(){CK.undo.push(CK.pctx.getImageData(0,0,CP,CP));if(CK.undo.length>15)CK.undo.shift();updUndo();}
+function updUndo(){$('#c-undo').disabled=!CK.undo.length;}
+function hex2rgb(h){const n=parseInt(h.slice(1),16);return[n>>16&255,n>>8&255,n&255];}
+function cpos(e){const r=$('#c-cv').getBoundingClientRect();return{x:(e.clientX-r.left)/r.width*CP,y:(e.clientY-r.top)/r.height*CP};}
+function fillAt(p){let x=Math.round(p.x),y=Math.round(p.y);if(x<0||y<0||x>=CP||y>=CP)return;let L=CK.lab[y*CP+x];
+ if(L<0){search:for(let r=1;r<=8;r++)for(let dy=-r;dy<=r;dy++)for(let dx=-r;dx<=r;dx++){const xx=x+dx,yy=y+dy;if(xx<0||yy<0||xx>=CP||yy>=CP)continue;const l=CK.lab[yy*CP+xx];if(l>=0){L=l;break search;}}}
+ if(L<0)return;pushUndo();const im=CK.pctx.getImageData(0,0,CP,CP),d=im.data,[r,g,b]=CK.tool==='erase'?[255,255,255]:hex2rgb(CK.color);
+ for(let k=CK.off[L],e=CK.off[L+1]??CK.flat.length;k<e;k++){const i=CK.flat[k]*4;d[i]=r;d[i+1]=g;d[i+2]=b;d[i+3]=255;}
+ CK.pctx.putImageData(im,0,0);CK.dirty=true;drawColor();tone(520+Math.random()*400,.07,'triangle',.05);}
+function brushLine(a,b){const c=CK.pctx;c.strokeStyle=CK.tool==='erase'?'#fff':CK.color;c.lineWidth=CK.tool==='erase'?34:20;c.lineCap='round';c.lineJoin='round';c.beginPath();c.moveTo(a.x,a.y);c.lineTo(b.x+.01,b.y);c.stroke();CK.dirty=true;drawColor();}
+function setTool(t){CK.tool=t;document.querySelectorAll('.ctool[data-tool]').forEach(b=>{const on=b.dataset.tool===t;b.classList.toggle('on',on);b.setAttribute('aria-pressed',String(on));});
+ $('#c-cv').dataset.tool=t;}
+function setColor(col){CK.color=col;if(CK.tool==='erase')setTool('fill');document.querySelectorAll('.swatch').forEach(s=>{const on=s.dataset.c===col;s.classList.toggle('on',on);s.setAttribute('aria-pressed',String(on));});}
+{const pal=$('#c-pal');PAL.forEach(([col,nm])=>{const b=document.createElement('button');b.type='button';b.className='swatch';b.dataset.c=col;b.style.setProperty('--sw',col);b.setAttribute('aria-label',nm);b.title=nm;b.addEventListener('click',()=>{ac();tone(660,.05,'triangle',.04);setColor(col);});pal.append(b);});setColor(PAL[0][0]);}
+document.querySelectorAll('.ctool[data-tool]').forEach(b=>b.addEventListener('click',()=>{ac();setTool(b.dataset.tool);}));
+$('#c-undo').addEventListener('click',()=>{const im=CK.undo.pop();if(im){CK.pctx.putImageData(im,0,0);drawColor();}updUndo();});
+{const cv=$('#c-cv');
+ cv.addEventListener('pointerdown',e=>{if(!CK.plate)return;ac();cv.setPointerCapture(e.pointerId);const p=cpos(e);
+  if(CK.tool==='fill')fillAt(p);else{pushUndo();CK.drawing=true;CK.last=p;brushLine(p,p);}});
+ cv.addEventListener('pointermove',e=>{if(!CK.drawing)return;const p=cpos(e);brushLine(CK.last,p);CK.last=p;});
+ const end=()=>{CK.drawing=false;};cv.addEventListener('pointerup',end);cv.addEventListener('pointercancel',end);}
+function finalImage(){const W2=CP,H2=CP+90,f=document.createElement('canvas');f.width=W2;f.height=H2;const c=f.getContext('2d');
+ c.fillStyle='#fff';c.fillRect(0,0,W2,H2);c.drawImage(CK.paint,0,0);c.drawImage(CK.line,0,0);
+ c.strokeStyle=NAVY;c.lineWidth=6;c.strokeRect(3,3,W2-6,H2-6);c.beginPath();c.moveTo(0,CP);c.lineTo(W2,CP);c.stroke();
+ capaldiMark(c,52,CP+45,26);wordmark(c,190,CP+38,26,NAVY,true);
+ c.fillStyle=NAVY;c.font='italic 500 20px "Bodoni Moda", Georgia, serif';c.textAlign='right';c.textBaseline='middle';c.fillText('Gekleurd bij Capaldi Kappers',W2-24,CP+45);return f;}
+$('#c-done-btn').addEventListener('click',()=>{const f=finalImage();const art=loadArt();
+ let small=document.createElement('canvas');small.width=300;small.height=345;small.getContext('2d').drawImage(f,0,0,300,345);
+ art.push({plate:CK.plate.id,img:small.toDataURL('image/jpeg',.82),d:Date.now()});while(art.length>8)art.shift();let ok=saveArt(art);while(!ok&&art.length>1){art.shift();ok=saveArt(art);}
+ CK.final=f;$('#c-final').src=f.toDataURL('image/png');$('#c-edit').hidden=true;$('#c-done').hidden=false;fanfare();
+ say('#say-color',host(),'Wat een mooie kleurplaat! Laat hem zien bij de balie van Capaldi.','happy');});
+$('#c-save').addEventListener('click',()=>{if(!CK.final)return;const a=document.createElement('a');a.href=CK.final.toDataURL('image/png');a.download=`capaldi-kleurplaat-${CK.plate.id}.png`;document.body.append(a);a.click();a.remove();});
+function printImg(src){const pa=$('#print-area');pa.innerHTML=`<img alt="Kleurplaat" src="${src}">`;const im=pa.querySelector('img');const go=()=>{try{window.print();}catch(e){}};if(im.complete)setTimeout(go,50);else im.onload=go;}
+$('#c-print').addEventListener('click',()=>{if(CK.final)printImg(CK.final.toDataURL('image/png'));});
+$('#c-print-empty').addEventListener('click',()=>{if(!CK.plate)return;const keep=CK.paint;const blank=document.createElement('canvas');blank.width=blank.height=CP;const bc=blank.getContext('2d');bc.fillStyle='#fff';bc.fillRect(0,0,CP,CP);CK.paint=blank;const f=finalImage();CK.paint=keep;printImg(f.toDataURL('image/png'));});
+$('#c-other').addEventListener('click',()=>{$('#c-edit').hidden=true;$('#c-done').hidden=true;$('#c-pick').hidden=false;renderPlates();say('#say-color',host(),'Kies een kleurplaat.','happy');});
+$('#c-again').addEventListener('click',()=>$('#c-other').click());
+$('#c-quit').addEventListener('click',()=>{show('#s-start');renderGames();});
+$('#g-color').addEventListener('click',()=>{ac();startColor();});
+addEventListener('resize',()=>{if(!$('#s-color').hidden&&!$('#c-edit').hidden&&CK.plate){const cv=$('#c-cv'),sz=Math.round(cv.getBoundingClientRect().width);if(sz&&sz!==CK.sz){CK.dctx=fitCanvas(cv,sz,sz);CK.sz=sz;drawColor();}}});
+
 $('#again').addEventListener('click',()=>S.mode==='mem'?startMem():start(S.m));
 $('#back').addEventListener('click',()=>{show('#s-start');renderDex();renderCrew();renderGames();updateAgebar();});
 /* Kappersmemory */
@@ -750,6 +855,10 @@ $('#g-knip').addEventListener('click',()=>{ac();$('#dex').scrollIntoView({behavi
 $('#g-mem').addEventListener('click',()=>{ac();startMem();});
 function renderGames(){const a=fitCanvas($('#g-knip canvas'),160,110);a.clearRect(0,0,160,110);drawMonster(a,M[0],80,64,22,{lens:null,time:1.2,mood:'smile'});
  const b=fitCanvas($('#g-mem canvas'),160,110);b.clearRect(0,0,160,110);[[50,'schaar',-.12],[110,'fohn',.12]].forEach(([x,id,r])=>{b.save();b.translate(x,55);b.rotate(r);b.fillStyle='#fff';b.strokeStyle=NAVY;b.lineWidth=2.5;b.beginPath();b.roundRect(-30,-40,60,80,10);b.fill();b.stroke();b.restore();drawTool(b,id,x,55,22);});
+ {const k=fitCanvas($('#g-color canvas'),160,110);k.clearRect(0,0,160,110);k.fillStyle='#fff';k.strokeStyle=NAVY;k.lineWidth=2.5;k.beginPath();k.roundRect(20,12,78,86,8);k.fill();k.stroke();
+  k.save();k.beginPath();k.roundRect(20,12,78,86,8);k.clip();drawCrew(k,'lokkie',59,52,24,'happy');k.restore();
+  ['#ff5fa2','#ffc928','#22c3c3','#8a5cf6'].forEach((col,i)=>{k.fillStyle=col;k.beginPath();k.arc(120+(i%2)*22,30+Math.floor(i/2)*24,9,0,Math.PI*2);k.fill();k.stroke();});
+  k.save();k.translate(128,86);k.rotate(-.7);k.fillStyle='#ffc928';k.beginPath();k.roundRect(-4,-24,8,30,3);k.fill();k.stroke();k.fillStyle='#ff5fa2';k.beginPath();k.moveTo(-6,6);k.lineTo(6,6);k.lineTo(0,18);k.closePath();k.fill();k.stroke();k.restore();}
  const ms=DB.mem||0;$('#g-mem-stars').innerHTML=[1,2,3].map(i=>`<span class="${i<=ms?'on':''}">★</span>`).join('');}
 
 const A=['Snelle','Stoere','Gouden','Wilde','Turbo','Super','Mega','Flitsende'],N=['Schaar','Kam','Föhn','Knipper','Krul','Stekel','Kuif','Tondeuse'];
@@ -870,6 +979,6 @@ function drawDemo(c,k,t){const w=380,h=300,m=M[0],f=fitR(w,h),R=f.R,cy=f.cy,cx=w
 
 if(DB.device)setDevice(DB.device);
 renderDex();renderBoard();renderCrew();renderGames();goStep(0);
-if(/[?&]test\b/.test(location.search))window.__KM={S,MS,M,start,begin3,frame3,finish,startMem,openMeet,setAge,toStart,get GRP(){return GRP;}};
+if(/[?&]test\b/.test(location.search))window.__KM={S,MS,M,CK,PLATES,openPlate,startColor,fillAt,start,begin3,frame3,finish,startMem,openMeet,setAge,toStart,get GRP(){return GRP;}};
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{renderDex();renderCrew();renderGames();});
 })();
