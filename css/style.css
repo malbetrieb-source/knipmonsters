@@ -245,7 +245,7 @@ body.phone .lvl{font-size:11px;padding:2px 9px}
 .game{display:flex;flex-direction:column;align-items:stretch;gap:12px;text-align:left;padding:14px;background:#fff;color:var(--navy);border:3px solid var(--navy);border-radius:20px;box-shadow:0 5px 0 var(--navy);min-width:0}
 .game:hover{transform:translateY(-3px)}
 .game:active{transform:translateY(3px);box-shadow:0 2px 0 var(--navy)}
-.game canvas{display:block;width:100%;height:auto;aspect-ratio:160/110;border-radius:14px;background:#d4f2ff;border:2.5px solid var(--navy)}
+.game canvas{display:block;width:100%;height:auto;aspect-ratio:380/300;border-radius:14px;background:#d4f2ff;border:2.5px solid var(--navy)}
 .game>span{display:flex;flex-direction:column;gap:6px;min-width:0;padding-inline:2px}
 .game b{font-family:var(--f-game);font-weight:400;font-size:clamp(17px,2.1vw,20px);line-height:1.15;overflow-wrap:anywhere}
 .game small{font-size:14px;line-height:1.4;color:var(--muted)}
