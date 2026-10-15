@@ -327,5 +327,5 @@ body.phone #s-tank .tgoal{display:none}
 
 .credit{display:inline-block;margin-top:6px;font-size:12px;letter-spacing:.04em;color:var(--muted)}
 .credit b{color:var(--navy)}
-.credit{display:inline-flex;align-items:center;gap:8px}
-.rflogo{height:44px;width:auto;vertical-align:middle}
+.credit{display:inline-flex;align-items:center;gap:6px;font-size:11px}
+.rflogo{height:28px;width:auto;vertical-align:middle;opacity:.75}
